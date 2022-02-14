@@ -1,0 +1,4 @@
+## bh=3, omega=3
+## eta=bh*omega/N
+##
+## <y^2>		D<y^2>		N

@@ -1,0 +1,2 @@
+10000000
+../results/output/energy/eta_0.05_omega_4/energy_N_5.txt
