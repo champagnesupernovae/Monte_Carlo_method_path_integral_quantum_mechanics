@@ -1,2 +1,2 @@
 10000000
-../results/output/energy/eta_0.05_omega_4/energy_N_5.txt
+../results/output/mean_y2/bh_1_omega_1/mean_y2_N_10.txt

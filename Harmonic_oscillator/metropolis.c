@@ -15,7 +15,7 @@ double two_point_connected_function(double *field, int N, int k);
 
 int main(){
 	int iflag, measures, i_decorrel, i_term, k=0;
-	double eta=5, d_metro, bh, omega=4;
+	double eta, d_metro, bh=1, omega=1;
     double acc=0, rej=0, acc_over_rej;
     FILE *input_file, *field_out_file, *field_0_file, *energy_file, *mean_y2_file, *mean_dy2_file, *C2_file;
     double *field, **C2;
@@ -46,9 +46,9 @@ int main(){
     fclose(input_file);
 
 
-    //// cycle over different chain lenghts (N) ////
+    //// cycle over different chain steps (N) ////
 
-    for (int N=50; N<100; N+=10){
+    for (int N=10; N<20; N+=20){
         
         // file with last field
         /*sprintf(field_out_filename, "./results/field/eta_%.2lf_omega_%.0lf/field_out_file_N_%d.txt", eta, omega, N);
@@ -59,21 +59,21 @@ int main(){
         }*/
 
         // file with field[0] for the ground wave function
-        sprintf(field_0_filename, "./results/field_0/eta_%.0lf_omega_%.0lf/field_0_out_file_N_%d.txt", eta, omega, N);
-        printf("%s\n", field_0_filename);
+        /*sprintf(field_0_filename, "./results/field_0/eta_%.0lf_omega_%.0lf/field_0_out_file_N_%d.txt", eta, omega, N);
+        //printf("%s\n", field_0_filename);
         field_0_file = fopen(field_0_filename, "w");
         if(field_0_file==NULL){
             perror("Errore in apertura del file field 0");
             exit(1);
-        }
+        }*/
 
         // file with y^2 mean values
-        /*sprintf(mean_y2_filename, "./results/output/mean_y2/bh_%.0lf_omega_%.0lf/mean_y2_N_%d.txt", bh, omega, N);
+        sprintf(mean_y2_filename, "./results/output/mean_y2/bh_%.0lf_omega_%.0lf/mean_y2_N_%d.txt", bh, omega, N);
         mean_y2_file = fopen(mean_y2_filename, "w");
         if(mean_y2_file==NULL){
             perror("Errore in apertura del file");
             exit(1);
-        }*/
+        }
 
         // file with dy^2 mean values
         /*sprintf(mean_dy2_filename, "./results/output/mean_dy2/bh_%.0lf_omega_%.0lf/mean_dy2_N_%d.txt", bh, omega, N);
@@ -113,9 +113,11 @@ int main(){
 
 
         //// PARAMETERS SETTING ////
-        bh = N*eta / omega;
+        //bh = N*eta / omega;
         //eta = bh*omega / N;
-        d_metro = 2*sqrt(eta);
+        eta = 0.1;
+        //d_metro = 2*sqrt(eta);
+        d_metro = 0.5;
         printf("eta=%lf\n", eta);
 
 
@@ -145,8 +147,8 @@ int main(){
             fprintf(energy_file, "%lf\n", U_n);*/
 
             // mean of y^2
-            /*y2mean = y2_mean(N, field);
-            fprintf(mean_y2_file, "%lf\n", y2mean);*/
+            y2mean = y2_mean(N, field);
+            fprintf(mean_y2_file, "%lf\n", y2mean);
 
             // mean of dy^2
             /*dy2mean = dy2_mean(N, field);
@@ -159,7 +161,7 @@ int main(){
 
             // save the value of field[0] over file to compute
             // the ground state wave function
-            fprintf(field_0_file, "%lf\n", field[0]);
+            //fprintf(field_0_file, "%lf\n", field[0]);
             
         }
         
@@ -187,8 +189,8 @@ int main(){
 
         // close all files
         //fclose(field_out_file);
-        fclose(field_0_file);
-        //fclose(mean_y2_file);
+        //fclose(field_0_file);
+        fclose(mean_y2_file);
         //fclose(mean_dy2_file);
         //fclose(energy_file);
         //fclose(C2_file);

@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 A = list()
-N_list = [30,40,50,60,70]
+N_list = [30,70]
 
 for N in N_list:
 	bh = 5
@@ -22,5 +22,5 @@ for N in N_list:
 	plt.plot(x, field, marker='.')
 
 #plt.ylim(-2,10)
-#plt.legend()
+plt.legend()
 plt.show()
