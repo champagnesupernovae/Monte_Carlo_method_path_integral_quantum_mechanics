@@ -277,7 +277,7 @@ void update_metropolis (double *acc, double *rej, int N, double eta, double d_me
         p_i = np[i];
         s_i = ns[i];
 
-        field_P = field[i] + d_metro*(2*x-1);
+        field_P = field[i] + d_metro*(1-2*x);
 
         dS = c1*(field_P-field[i])*(field[s_i]+field[p_i]) + c2*(pow(field[i],2)-pow(field_P,2));
         r = exp(dS);
@@ -300,7 +300,7 @@ void update_metropolis (double *acc, double *rej, int N, double eta, double d_me
 //-------------------------------------------------//
 
 // compute the internal energy
-double internal_energy(int N, double eta, double *field){
+double internal_energy(int N, double eta, double *field, int *ns){
     double mean_dy2=0, mean_y2=0;
 
     for (int i=0; i<N; i++){
@@ -309,8 +309,8 @@ double internal_energy(int N, double eta, double *field){
     mean_y2 = mean_y2 * 1./N;
 
 
-    for (int j=0; j<N-1; j++){
-        mean_dy2 += pow((field[j+1]-field[j]),2);
+    for (int j=0; j<N; j++){
+        mean_dy2 += pow((field[ns[j]]-field[j]),2);
     }
     mean_dy2 = mean_dy2 * 1./N;
 
@@ -334,11 +334,11 @@ double y2_mean(int N, double *field){
 //-------------------------------------------------//
 
 // compute the mean of delta_y^2
-double dy2_mean(int N, double *field){
+double dy2_mean(int N, double *field, int *ns){
     double mean_dy2=0;
 
-    for (int j=0; j<N-1; j++){
-        mean_dy2 += pow((field[j+1]-field[j]),2);
+    for (int j=0; j<N; j++){
+        mean_dy2 += pow((field[ns[j]]-field[j]),2);
     }
 
     return mean_dy2 * 1./N;

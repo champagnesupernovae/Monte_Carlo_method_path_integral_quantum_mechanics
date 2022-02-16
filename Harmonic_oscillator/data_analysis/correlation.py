@@ -5,16 +5,7 @@ data = open("../results/output/mean_y2/bh_1_omega_1/mean_y2_N_10.txt","r")
 y2 = np.loadtxt(data, unpack = True)
 data.close()
 
-print(np.mean(y2))
-print(np.std(y2))
-
-plt.figure(1)
-plt.plot(np.arange(0,len(y2)), y2, '.')
-plt.plot(np.arange(0,len(y2)), np.mean(y2)*np.ones(len(y2)), color='red')
-plt.show()
-
-
-y2 = y2[0:1000]
+#y2 = y2[0:5000]
 
 N=len(y2)
 C = np.zeros(N)
@@ -28,4 +19,7 @@ for k in range(0,N,1):
 
 plt.figure(2)
 plt.plot(np.arange(0,1000,1), C[0:1000], '.')
+plt.xlim(0,200)
+plt.ylabel("Correlation")
+plt.xlabel("Correlation length")
 plt.show()
