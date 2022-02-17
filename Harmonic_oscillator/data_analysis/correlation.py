@@ -5,7 +5,7 @@ data = open("../results/output/mean_y2/bh_1_omega_1/mean_y2_N_10.txt","r")
 y2 = np.loadtxt(data, unpack = True)
 data.close()
 
-#y2 = y2[0:5000]
+y2 = y2[0:5000]
 
 N=len(y2)
 C = np.zeros(N)

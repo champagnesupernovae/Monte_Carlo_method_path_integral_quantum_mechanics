@@ -69,7 +69,7 @@ int main(){
 	MEAN = calloc(M, sizeof(double)); // array with means of each singol chain
 	resampled_chain = calloc(L, sizeof(double)); // array of reseampled chain
 	
-	for (int j=1; j<10; j++){
+	for (int j=1; j<12; j++){
 		len = pow(2,j);
 
 		// let's make the resampled chains
@@ -98,11 +98,9 @@ int main(){
 
 		// ..and its std
 		for(int i=0; i<M; i++){
-				std += pow(MEAN[i],2);
+				std += pow((MEAN[i]-final_mean),2);
 			}
-		std = std/M;
-		std = sqrt(std - pow(final_mean,2));
-
+		std = sqrt(std/(M*(M-1)));
 
 		// print in stdout...
 		printf("your quantity = %.10lf +/- %.10lf\n", final_mean, std);
