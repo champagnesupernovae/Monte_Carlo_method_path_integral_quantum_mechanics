@@ -18,7 +18,6 @@ int main(){
 	int L, len, M=50, eta;
 	double *sample, *resampled_chain, *MEAN, *var, sum=0, sum2=0, final_mean=0,final_mean2=0, std=0, sigma=0, var_mean=0, var2_mean=0;
 	char sample_name[60];
-	//char sample_name[200];
 	FILE *file_sample_name, *bootstrap_input, *mean_sigma_len_file, *mean_res_chains_file;
 
 	srand(time(NULL));
@@ -89,11 +88,11 @@ int main(){
 
 			// write it over the MEAN[] array
 			MEAN[m] = sum;
-			var[m] = sum2- sum*sum;
+			var[m] = sum2 - sum*sum;
 			fprintf(mean_res_chains_file, "%lf\n", sum);
 
 			sum = 0;
-			sum2= 0;
+			sum2 = 0;
 		}
 
 		// compute the final mean...
@@ -102,26 +101,20 @@ int main(){
 				var_mean += var[i];
 				var2_mean += var[i]*var[i];
 			}
+
 		final_mean = final_mean/M;
 		var_mean = var_mean/M;
 		var2_mean = var2_mean/M;
-		sigma= sqrt(var2_mean- var_mean*var_mean);
-		// ..and its std
-		/*for(int i=0; i<M; i++){
-				std += pow((MEAN[i]-final_mean),2);
-			}
-		std = sqrt(std/(M*(M-1)));
-		*/	
-		// print in stdout...
-		//printf("your quantity = %.10lf +/- %.10lf\n", final_mean, std);
-		printf("iter %d",j);
+		sigma = sqrt(var2_mean - var_mean*var_mean);
+
+		printf("iter %d\n",j);
 		// ..and write it over file
-		fprintf(mean_sigma_len_file, "%lf\t%d\n", sigma, len);
+		fprintf(mean_sigma_len_file, "%lf\t%lf\t%d\n", final_mean, sigma, len);
 
 		final_mean = 0;
 		var_mean = 0;
 		var2_mean = 0;
-		sigma=0;
+		sigma = 0;
 		std = 0;
 	
 	}

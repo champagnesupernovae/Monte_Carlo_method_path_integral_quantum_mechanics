@@ -98,9 +98,9 @@ int main(){
 
 		// ..and its std
 		for(int i=0; i<M; i++){
-				std += pow((MEAN[i]-final_mean),2);
+				std += pow((MEAN[i]),2);
 			}
-		std = sqrt(std/(M*(M-1)));
+		std = sqrt(std/M - pow(final_mean,2));
 
 		// print in stdout...
 		printf("your quantity = %.10lf +/- %.10lf\n", final_mean, std);
