@@ -1,2 +1,2 @@
 10000000
-../Results/output/mean_y2/bh_1_omega_1/mean_y2_N_10.txt
+../Results/output/mean_y2/bh_3_omega_1/mean_y2_N_4.txt

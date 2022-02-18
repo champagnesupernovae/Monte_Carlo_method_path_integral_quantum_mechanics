@@ -15,12 +15,12 @@ double two_point_connected_function(double *field, int N, int k);
 
 int main(){
 	int iflag, measures, i_decorrel, i_term, k=0;
-	double eta, d_metro, bh=3, omega=1;
+	double eta, d_metro, bh=5, omega=4;
     double acc=0, rej=0, acc_over_rej;
     FILE *input_file, *field_out_file, *field_0_file, *energy_file, *mean_y2_file, *mean_dy2_file, *C2_file;
     double *field, **C2;
     double U_n, y2mean, dy2mean, Ctau;  // U_n is the intern energy normalized over h/2pi * omega
-    int *np, *ns, array_N[8]={3,4,5,7,10,15,30,50}, len_array_N, N;
+    int *np, *ns, array_N[11]={20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120}, len_array_N, N;
     char field_out_filename[65], field_0_filename[65], energy_filename[65], mean_y2_filename[60], mean_dy2_filename[60], C2_filename[60];
     
     srand(time(NULL));
@@ -93,12 +93,12 @@ int main(){
         }*/
         
         // file with C2 (two-point function)
-        sprintf(C2_filename, "./results/output/C2/bh_%.0lf_omega_%.0lf/C2_N_%d.txt", bh, omega, N);
+        /*sprintf(C2_filename, "./results/output/C2/bh_%.0lf_omega_%.0lf/C2_N_%d.txt", bh, omega, N);
         C2_file = fopen(C2_filename, "w");
         if(C2_file==NULL){
             perror("Errore in apertura del file");
             exit(1);
-        }
+        }*/
         
 
         field = calloc(N, sizeof(double));
@@ -107,10 +107,10 @@ int main(){
 
         // C2[i][j]: i run over measures, j run over tau (in [0,bh])
         // I will take, for each tau (j), the mean over measures (i)
-        C2 = calloc(measures, sizeof(double*));
+        /*C2 = calloc(measures, sizeof(double*));
         for(int i=0; i<measures; i++){
             C2[i] = calloc(N, sizeof(double));
-        }
+        }*/
 
 
         //// PARAMETERS SETTING ////
@@ -154,9 +154,9 @@ int main(){
             fprintf(mean_dy2_file, "%lf\n", dy2mean);*/
 
             // two-point correlation function for each measure
-            for (int tau=0; tau<N; tau++){
+            /*for (int tau=0; tau<N; tau++){
                 C2[i][tau] = two_point_connected_function(field, N, tau);
-            }
+            }*/
 
             // save the value of field[0] over file to compute
             // the ground state wave function
@@ -165,12 +165,12 @@ int main(){
         }
         
         // write over file C2
-        for(int i=0; i<measures; i++){
+        /*for(int i=0; i<measures; i++){
             for(int tau=0; tau<N; tau++){
                 fprintf(C2_file, "%lf   ", C2[i][tau]);
             }
             fprintf(C2_file, "\n");
-        }
+        }*/
         
         
         // compute the percentage acceptance
@@ -198,7 +198,7 @@ int main(){
         free(field);
         free(np);
         free(ns);
-        free(C2);
+        //free(C2);
 
     }
 

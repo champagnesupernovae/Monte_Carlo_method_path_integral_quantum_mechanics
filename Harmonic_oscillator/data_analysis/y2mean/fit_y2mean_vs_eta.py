@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import math
 from scipy.optimize import curve_fit
 
-data = open("../bootstrap/y2mean_std_eta_bh3_omega1.txt","r")
+data = open("../../bootstrap/y2mean_std_eta_bh3_omega1.txt","r")
 y2, dy2, N = np.loadtxt(data, unpack=True)
 data.close()
 

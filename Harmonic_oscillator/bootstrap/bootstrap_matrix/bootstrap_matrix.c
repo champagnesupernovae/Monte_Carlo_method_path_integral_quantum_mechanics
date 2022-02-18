@@ -21,7 +21,7 @@ void make_binned_resampling(int L, int len, double *sample, double *resampled_ch
 
 int main(){
 
-	int L, len, M=50;
+	int L, len, M=100;
 	double **sample, *vector, *resampled_chain, *MEAN, sum=0, final_mean=0, std=0;
 	char sample_name[65];
 	FILE *file_sample_name, *bootstrap_input, *mean_sigma_len_file, *mean_res_chains_file;
@@ -84,7 +84,7 @@ int main(){
 	}*/
 	
 	//// FOR EACH j (=tau), CYCLE OVER DIFFERENT CORRELATION LENGTH ////
-	for(int j=9; j<10; j++){
+	for(int j=0; j<N; j++){
 		printf("tau = %d: \n", j);
 
 		vector = calloc(L, sizeof(double));
@@ -125,9 +125,9 @@ int main(){
 
 			// ..and its std
 			for(int i=0; i<M; i++){
-					std += pow((MEAN[i]-final_mean),2);
-				}
-			std = sqrt(std/M);
+				std += pow((MEAN[i]),2);
+			}
+			std = sqrt(std/M - pow(final_mean,2));
 
 			// print in stdout...
 			printf("your quantity = %.10lf +/- %.10lf\n", final_mean, std);
