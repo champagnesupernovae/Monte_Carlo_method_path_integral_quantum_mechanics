@@ -15,7 +15,7 @@ void make_binned_resampling(int L, int len, double *sample, double *resampled_ch
 
 int main(){
 
-	int L, len, M=50, eta;
+	int L, len, M=100, eta;
 	double *sample, *resampled_chain, *MEAN, *var, sum=0, sum2=0, final_mean=0,final_mean2=0, std=0, sigma=0, var_mean=0, var2_mean=0;
 	char sample_name[60];
 	FILE *file_sample_name, *bootstrap_input, *mean_sigma_len_file, *mean_res_chains_file;

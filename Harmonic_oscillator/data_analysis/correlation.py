@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-data = open("../Results/output/mean_y2/bh_3_omega_1/mean_y2_N_50.txt","r")
+data = open("../Results/output/mean_y2/bh_1_omega_1/mean_y2_N_10.txt","r")
 y2 = np.loadtxt(data, unpack = True)
 data.close()
 

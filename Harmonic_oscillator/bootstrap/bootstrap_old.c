@@ -15,7 +15,7 @@ void make_binned_resampling(int L, int len, double *sample, double *resampled_ch
 
 int main(){
 
-	int L, len, M=50, eta;
+	int L, len, M=100, eta;
 	double *sample, *resampled_chain, *MEAN, sum=0, final_mean=0, std=0;
 	char sample_name[60];
 	FILE *file_sample_name, *bootstrap_input, *mean_sigma_len_file, *mean_res_chains_file;
@@ -43,14 +43,14 @@ int main(){
     }
 
     // file in which writing mean,std,correlation_len
-	mean_sigma_len_file = fopen("bootstrap_mean_sigma_len_file.txt","w");
+	mean_sigma_len_file = fopen("bootstrap_old_mean_sigma_len_file.txt","w");
 	if(mean_sigma_len_file==NULL){
         perror("Error opening file mean_sigma_len_file.txt");
         exit(1);
     }
 
     // file in which writing the means of the resampled chains
-	mean_res_chains_file = fopen("bootstrap_mean_res_chains_file.txt","w");
+	mean_res_chains_file = fopen("bootstrap_old_mean_res_chains_file.txt","w");
 	if(mean_res_chains_file==NULL){
         perror("Error opening file mean_res_chains_file.txt");
         exit(1);
