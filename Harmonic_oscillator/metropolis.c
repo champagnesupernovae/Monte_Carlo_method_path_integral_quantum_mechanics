@@ -11,23 +11,24 @@ double internal_energy(int N, double eta, double *field, int *ns);
 double y2_mean(int N, double *field);
 double dy2_mean(int N, double *field, int *ns);
 double two_point_connected_function(double *field, int N, int k);
-double four_point_connected_function(double *field, int N, int k)
+double four_point_connected_function(double *field, int N, int k);
 
 
 int main(){
 	int iflag, measures, i_decorrel, i_term, k=0;
-	double eta, d_metro, bh=20, omega=4;
+	double eta, d_metro, bh=100, omega=1;
     double acc=0, rej=0, acc_over_rej;
     FILE *input_file, *field_out_file, *field_0_file, *energy_file, *mean_y2_file, *mean_dy2_file, *C2_file, *C2_file_mean, *C4_file, *C4_file_mean;
     double *field, **C2, **C4, M;
     double U_n, y2mean, dy2mean, Ctau;  // U_n is the intern energy normalized over h/2pi * omega
-    int *np, *ns, array_N[4]={100, 130, 200, 400}, len_array_N, N;
+    int *np, *ns, array_N[4]={120, 170, 250, 500}, len_array_N, N;
     char field_out_filename[65], field_0_filename[65], energy_filename[65], mean_y2_filename[60], mean_dy2_filename[60], C2_filename[60], C2_mean_filename[67], C4_filename[60], C4_mean_filename[67];
     
     srand(time(NULL));
     //N*a=bh
     //N*eta=bh*omega
-    //array_N[4]={120, 170, 250, 500}
+    //array_N[4]={120, 170, 250, 500}, bh=100
+    //array_N[4]={100, 130, 200, 400}, bh=20
 
     //// open input files to get some parameters ////
 
