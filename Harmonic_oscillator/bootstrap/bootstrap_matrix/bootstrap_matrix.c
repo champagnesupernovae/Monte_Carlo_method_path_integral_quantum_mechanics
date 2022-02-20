@@ -13,7 +13,7 @@
 #include<string.h>
 
 //!!!!!! ENTER N BEFORE STARTING !!!!!!//
-#define N 4
+#define N 80
 //!!!!!! ENTER N BEFORE STARTING !!!!!!//
 
 void make_binned_resampling(int L, int len, double *sample, double *resampled_chain);
@@ -21,7 +21,7 @@ void make_binned_resampling(int L, int len, double *sample, double *resampled_ch
 
 int main(){
 
-	int L, len, M=100;
+	int L, len, M=50;
 	double **sample, *vector, *resampled_chain, *MEAN, sum=0, final_mean=0, std=0;
 	char sample_name[65];
 	FILE *file_sample_name, *bootstrap_input, *mean_sigma_len_file, *mean_res_chains_file;

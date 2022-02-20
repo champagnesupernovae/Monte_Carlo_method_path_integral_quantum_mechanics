@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-k_max = 15
+k_max = 9
 tau_max = 10
 
 file_name = "./bootstrap_matrix_mean_sigma_len_file.txt"

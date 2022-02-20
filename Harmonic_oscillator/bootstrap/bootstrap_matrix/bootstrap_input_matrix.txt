@@ -1,2 +1,2 @@
 1000000
-../../results/output/C2/bh_3_omega_1/C2_N_4.txt
+../../results/output/C2/bh_5_omega_4/C2_N_80.txt
