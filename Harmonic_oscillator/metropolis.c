@@ -27,8 +27,8 @@ int main(){
     srand(time(NULL));
     //N*a=bh
     //N*eta=bh*omega
-    //array_N[4]={120, 170, 250, 500}, bh=100
-    //array_N[4]={100, 130, 200, 400}, bh=20
+    //array_N[4]={120, 170, 250, 500}, bh=100, omega=1
+    //array_N[4]={100, 130, 200, 400}, bh=20, omega=4
 
     //// open input files to get some parameters ////
 
