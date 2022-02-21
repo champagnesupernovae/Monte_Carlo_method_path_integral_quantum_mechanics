@@ -11,22 +11,24 @@ double internal_energy(int N, double eta, double *field, int *ns);
 double y2_mean(int N, double *field);
 double dy2_mean(int N, double *field, int *ns);
 double two_point_connected_function(double *field, int N, int k);
+double four_point_connected_function(double *field, int N, int k);
 
 
 int main(){
 	int iflag, measures, i_decorrel, i_term, k=0;
-	double eta, d_metro, bh=5, omega=4;
+	double eta, d_metro, bh=100, omega=1;
     double acc=0, rej=0, acc_over_rej;
-    FILE *input_file, *field_out_file, *field_0_file, *energy_file, *mean_y2_file, *mean_dy2_file, *C2_file, *C2_file_mean;
-    double *field, **C2, M;
+    FILE *input_file, *field_out_file, *field_0_file, *energy_file, *mean_y2_file, *mean_dy2_file, *C2_file, *C2_file_mean, *C4_file, *C4_file_mean;
+    double *field, **C2, **C4, M;
     double U_n, y2mean, dy2mean, Ctau;  // U_n is the intern energy normalized over h/2pi * omega
-    int *np, *ns, array_N[4]={80, 50, 30, 25}, len_array_N, N;
-    char field_out_filename[65], field_0_filename[65], energy_filename[65], mean_y2_filename[60], mean_dy2_filename[60], C2_filename[60], C2_mean_filename[67];
+    int *np, *ns, array_N[2]={250, 500}, len_array_N, N;
+    char field_out_filename[65], field_0_filename[65], energy_filename[65], mean_y2_filename[60], mean_dy2_filename[60], C2_filename[60], C2_mean_filename[67], C4_filename[60], C4_mean_filename[67];
     
     srand(time(NULL));
     //N*a=bh
     //N*eta=bh*omega
-
+    //array_N[4]={120, 170, 250, 500}, bh=100, omega=1
+    //array_N[4]={100, 130, 200, 400}, bh=20, omega=4
 
     //// open input files to get some parameters ////
 
@@ -52,7 +54,7 @@ int main(){
     for (int iter=0; iter<len_array_N; iter++){
         N = array_N[iter];
         // file with last field
-        /*sprintf(field_out_filename, "./Results/field/eta_%.2lf_omega_%.0lf/field_out_file_N_%d.txt", eta, omega, N);
+        /*sprintf(field_out_filename, "./results/field/eta_%.2lf_omega_%.0lf/field_out_file_N_%d.txt", eta, omega, N);
         field_out_file = fopen(field_out_filename, "w");
         if(field_out_file==NULL){
             perror("Errore in apertura del file out");
@@ -60,7 +62,7 @@ int main(){
         }*/
 
         // file with field[0] for the ground wave function
-        /*sprintf(field_0_filename, "./Results/field_0/eta_%.0lf_omega_%.0lf/field_0_out_file_N_%d.txt", eta, omega, N);
+        /*sprintf(field_0_filename, "./results/field_0/eta_%.0lf_omega_%.0lf/field_0_out_file_N_%d.txt", eta, omega, N);
         //printf("%s\n", field_0_filename);
         field_0_file = fopen(field_0_filename, "w");
         if(field_0_file==NULL){
@@ -69,7 +71,7 @@ int main(){
         }*/
 
         // file with y^2 mean values
-        /*sprintf(mean_y2_filename, "./Results/output/mean_y2/bh_%.0lf_omega_%.0lf/mean_y2_N_%d.txt", bh, omega, N);
+        /*sprintf(mean_y2_filename, "./results/output/mean_y2/bh_%.0lf_omega_%.0lf/mean_y2_N_%d.txt", bh, omega, N);
         mean_y2_file = fopen(mean_y2_filename, "w");
         if(mean_y2_file==NULL){
             perror("Errore in apertura del file");
@@ -77,7 +79,7 @@ int main(){
         }*/
 
         // file with dy^2 mean values
-        /*sprintf(mean_dy2_filename, "./Results/output/mean_dy2/bh_%.0lf_omega_%.0lf/mean_dy2_N_%d.txt", bh, omega, N);
+        /*sprintf(mean_dy2_filename, "./results/output/mean_dy2/bh_%.0lf_omega_%.0lf/mean_dy2_N_%d.txt", bh, omega, N);
         mean_dy2_file = fopen(mean_dy2_filename, "w");
         if(mean_dy2_file==NULL){
             perror("Errore in apertura del file");
@@ -85,7 +87,7 @@ int main(){
         }*/
 
         // file with energy values
-        /*sprintf(energy_filename, "./Results/output/energy/eta_%.2lf_omega_%.0lf/energy_N_%d.txt", eta, omega, N);
+        /*sprintf(energy_filename, "./results/output/energy/eta_%.2lf_omega_%.0lf/energy_N_%d.txt", eta, omega, N);
         energy_file = fopen(energy_filename, "w");
         if(energy_file==NULL){
             perror("Errore in apertura del file energy");
@@ -93,7 +95,7 @@ int main(){
         }*/
         
         // file with C2 (two-point function)
-        /*sprintf(C2_filename, "./Results/output/C2/bh_%.0lf_omega_%.0lf/C2_N_%d.txt", bh, omega, N);
+        /*sprintf(C2_filename, "./results/output/C2/bh_%.0lf_omega_%.0lf/C2_N_%d.txt", bh, omega, N);
         C2_file = fopen(C2_filename, "w");
         if(C2_file==NULL){
             perror("Errore in apertura del file");
@@ -101,12 +103,28 @@ int main(){
         }*/
 
         // file with C2[tau] (mean over measures)
-        sprintf(C2_mean_filename, "./Results/output/C2/bh_%.0lf_omega_%.0lf/C2_N_%d_fast.txt", bh, omega, N);
+        sprintf(C2_mean_filename, "./results/output/C2/bh_%.0lf_omega_%.0lf_mean/C2_N_%d.txt", bh, omega, N);
         C2_file_mean = fopen(C2_mean_filename, "w");
         if(C2_file_mean==NULL){
             perror("Errore in apertura del file C2");
             exit(1);
         }
+
+        // file with C4 (four-point function)
+        /*sprintf(C4_filename, "./results/output/C4/bh_%.0lf_omega_%.0lf/C4_N_%d.txt", bh, omega, N);
+        C4_file = fopen(C4_filename, "w");
+        if(C4_file==NULL){
+            perror("Errore in apertura del file");
+            exit(1);
+        }*/
+
+        // file with C4[tau] (mean over measures)
+        /*sprintf(C4_mean_filename, "./results/output/C4/bh_%.0lf_omega_%.0lf_mean/C4_N_%d.txt", bh, omega, N);
+        C4_file_mean = fopen(C4_mean_filename, "w");
+        if(C4_file_mean==NULL){
+            perror("Errore in apertura del file C4");
+            exit(1);
+        }*/
         
 
         field = calloc(N, sizeof(double));
@@ -119,6 +137,13 @@ int main(){
         for(int i=0; i<measures; i++){
             C2[i] = calloc(N, sizeof(double));
         }
+
+        // C4[i][j]: i run over measures, j run over tau (in [0,bh])
+        // I will take, for each tau (j), the mean over measures (i)
+        /*C4 = calloc(measures, sizeof(double*));
+        for(int i=0; i<measures; i++){
+            C4[i] = calloc(N, sizeof(double));
+        }*/
 
 
         //// PARAMETERS SETTING ////
@@ -162,9 +187,15 @@ int main(){
             fprintf(mean_dy2_file, "%lf\n", dy2mean);*/
 
             // two-point correlation function for each measure
-            for (int tau=0; tau<N; tau++){
+            /*for (int tau=0; tau<N; tau++){
                 C2[i][tau] = two_point_connected_function(field, N, tau);
+            }*/
+
+            // four-point correlation function for each measure
+            for (int tau=0; tau<N; tau++){
+                C4[i][tau] = four_point_connected_function(field, N, tau);
             }
+
 
             // save the value of field[0] over file to compute
             // the ground state wave function
@@ -181,13 +212,23 @@ int main(){
         }*/
 
         // write over file the mean of C2
-        for(int tau=0; tau<N; tau++){
+        /*for(int tau=0; tau<N; tau++){
             M = 0;
             for(int l=0; l<measures; l++){
                 M += C2[l][tau];
             }
             M = M/measures;
             fprintf(C2_file_mean, "%lf\n", M);
+        }*/
+
+        // write over file the mean of C4
+        for(int tau=0; tau<N; tau++){
+            M = 0;
+            for(int l=0; l<measures; l++){
+                M += C4[l][tau];
+            }
+            M = M/measures;
+            fprintf(C4_file_mean, "%lf\n", M);
         }
         
         
@@ -211,13 +252,22 @@ int main(){
         //fclose(mean_dy2_file);
         //fclose(energy_file);
         //fclose(C2_file);
-        fclose(C2_file_mean);
+        //fclose(C4_file);
+        //fclose(C2_file_mean);
+        fclose(C4_file_mean);
         
         // free the malloc
         free(field);
         free(np);
         free(ns);
-        free(C2);
+        /*for(int i=0; i<measures; i++){
+            free(C2[i]);
+        }*/
+        //free(C2);
+        for(int i=0; i<measures; i++){
+            free(C4[i]);
+        }
+        free(C4);
 
     }
 
@@ -366,21 +416,44 @@ double dy2_mean(int N, double *field, int *ns){
 
 // compute the two-point connected function
 double two_point_connected_function(double *field, int N, int k){
-    double C2=0, C2_norm, sum=0;
+    double C2=0, C2_norm=0, sum=0;
     int j=0;
 
     while (j+k < N){
         C2 += field[j+k]*field[j];
         j += 1;
     }
-
-    for(j=0; j<N; j++){
-        C2_norm += field[j]*field[j];
+    
+    for(int l=0; l<N; l++){
+        C2_norm += field[l]*field[l];
     }
 
-    for(int i=0; i<N; i++){
+    /*for(int i=0; i<N; i++){
         sum += field[i];
+    }*/
+
+    return (C2/j)/(C2_norm/N);
+}
+
+//-------------------------------------------------//
+
+// compute the two-point connected function
+double four_point_connected_function(double *field, int N, int k){
+    double C4=0, C4_norm=0, sum=0;
+    int j=0;
+
+    while (j+k < N){
+        C4 += pow(field[j+k],2)*pow(field[j],2);
+        j += 1;
+    }
+    
+    for(int l=0; l<N; l++){
+        C4_norm += pow(field[l],4);
     }
 
-    return (C2/j - pow(sum/N,2))/(C2_norm/N - pow(sum/N,2));
+    /*for(int i=0; i<N; i++){
+        sum += field[i];
+    }*/
+
+    return (C4/j)/(C4_norm/N);
 }
