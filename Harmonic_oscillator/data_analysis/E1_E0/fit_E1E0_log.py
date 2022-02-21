@@ -3,15 +3,16 @@ import matplotlib.pyplot as plt
 import math
 from scipy.optimize import curve_fit
 
-N = 500
+N = 120
 bh = 100
 omega = 1
 
-data = open("../../Results/output/C2/bh_100_omega_1_mean_fast/C2_N_500.txt","r")
+file_name = f"../../results/output/C2/bh_{bh}_omega_{omega}_mean/C2_N_{N}.txt"
+data = open(file_name,"r")
 C2 = np.loadtxt(data, unpack=True)
 data.close()
 
-div = 15
+div = 12
 L = int(N/div)
 C2 = C2[0:L]
 eta = bh*omega/N
