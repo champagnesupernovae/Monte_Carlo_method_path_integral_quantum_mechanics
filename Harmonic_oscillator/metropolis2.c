@@ -21,8 +21,8 @@ int main(){
     FILE *input_file, *field_out_file, *field_0_file, *energy_file, *mean_y2_file, *mean_dy2_file, *C2_file, *C2_file_mean, *C4_file, *C4_file_mean;
     double *field, **C2, **C4, M;
     double U_n, y2mean, dy2mean, Ctau;  // U_n is the intern energy normalized over h/2pi * omega
-    int *np, *ns, array_N[2]={250, 500}, len_array_N, N;
-    char field_out_filename[65], field_0_filename[65], energy_filename[65], mean_y2_filename[60], mean_dy2_filename[60], C2_filename[60], C2_mean_filename[67], C4_filename[60], C4_mean_filename[67];
+    int *np, *ns, array_N[4]={120, 170, 250, 500}, len_array_N, N;
+    char field_out_filename[65], field_0_filename[65], energy_filename[65], mean_y2_filename[60], mean_dy2_filename[60], C2_filename[60], C2_mean_filename[67], C4_filename[63], C4_mean_filename[69];
     
     srand(time(NULL));
     //N*a=bh
@@ -103,12 +103,12 @@ int main(){
         }*/
 
         // file with C2[tau] (mean over measures)
-        sprintf(C2_mean_filename, "./results/output/C2/bh_%.0lf_omega_%.0lf_mean/C2_N_%d.txt", bh, omega, N);
+        /*sprintf(C2_mean_filename, "./results/output/C2/bh_%.0lf_omega_%.0lf_mean/C2_N_%d.txt", bh, omega, N);
         C2_file_mean = fopen(C2_mean_filename, "w");
         if(C2_file_mean==NULL){
             perror("Errore in apertura del file C2");
             exit(1);
-        }
+        }*/
 
         // file with C4 (four-point function)
         /*sprintf(C4_filename, "./results/output/C4/bh_%.0lf_omega_%.0lf/C4_N_%d.txt", bh, omega, N);
@@ -119,12 +119,12 @@ int main(){
         }*/
 
         // file with C4[tau] (mean over measures)
-        /*sprintf(C4_mean_filename, "./results/output/C4/bh_%.0lf_omega_%.0lf_mean/C4_N_%d.txt", bh, omega, N);
+        sprintf(C4_mean_filename, "./results/output/C4/bh_%.0lf_omega_%.0lf_mean/C4_N_%d.txt", bh, omega, N);
         C4_file_mean = fopen(C4_mean_filename, "w");
         if(C4_file_mean==NULL){
             perror("Errore in apertura del file C4");
             exit(1);
-        }*/
+        }
         
 
         field = calloc(N, sizeof(double));
@@ -133,17 +133,17 @@ int main(){
 
         // C2[i][j]: i run over measures, j run over tau (in [0,bh])
         // I will take, for each tau (j), the mean over measures (i)
-        C2 = calloc(measures, sizeof(double*));
+        /*C2 = calloc(measures, sizeof(double*));
         for(int i=0; i<measures; i++){
             C2[i] = calloc(N, sizeof(double));
-        }
+        }*/
 
         // C4[i][j]: i run over measures, j run over tau (in [0,bh])
         // I will take, for each tau (j), the mean over measures (i)
-        /*C4 = calloc(measures, sizeof(double*));
+        C4 = calloc(measures, sizeof(double*));
         for(int i=0; i<measures; i++){
             C4[i] = calloc(N, sizeof(double));
-        }*/
+        }
 
 
         //// PARAMETERS SETTING ////
@@ -219,6 +219,14 @@ int main(){
             }
             M = M/measures;
             fprintf(C2_file_mean, "%lf\n", M);
+        }*/
+
+        // write the C4 matrix over file C4
+        /*for(int i=0; i<measures; i++){
+            for(int tau=0; tau<N; tau++){
+                fprintf(C4_file, "%lf   ", C4[i][tau]);
+            }
+            fprintf(C4_file, "\n");
         }*/
 
         // write over file the mean of C4
