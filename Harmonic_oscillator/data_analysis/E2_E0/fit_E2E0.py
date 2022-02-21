@@ -3,19 +3,18 @@ import matplotlib.pyplot as plt
 import math
 from scipy.optimize import curve_fit
 
-N = 120
-print("N = ",N)
+N = 500
+print("N =",N)
 bh = 100
 omega = 1
 
 file_name = f"../../results/output/C4/bh_{bh}_omega_{omega}_mean_fast/C4_N_{N}.txt"
-
-
 data = open(file_name,"r")
 C4 = np.loadtxt(data, unpack=True)
 data.close()
 
-div = 12
+div = 30
+print("div =",div)
 L = int(N/div)
 C4 = C4[0:L]
 eta = bh*omega/N
@@ -34,7 +33,7 @@ def f(x, A, E, phi):
 	return A*np.exp(-E*x) + phi
 
 xdata = np.linspace(0, bh/div, 1000)
-init = [1, 1, -0.5]
+init = [1, 2, -0.5]
 
 popt, pcov = curve_fit(f, tau, C4, init, dC4)
 A_fit, E_fit, phi_fit = popt

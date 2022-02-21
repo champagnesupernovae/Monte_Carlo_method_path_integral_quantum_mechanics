@@ -431,37 +431,44 @@ double two_point_connected_function(double *field, int N, int k){
         C2 += field[j+k]*field[j];
         j += 1;
     }
-    
+    C2 = C2/j;
+ 
+
     for(int l=0; l<N; l++){
         C2_norm += field[l]*field[l];
     }
+    C2_norm = C2_norm/N;
 
-    /*for(int i=0; i<N; i++){
-        sum += field[i];
-    }*/
 
-    return (C2/j)/(C2_norm/N);
+    return C2/C2_norm;
 }
 
 //-------------------------------------------------//
 
 // compute the two-point connected function
 double four_point_connected_function(double *field, int N, int k){
-    double C2=0, C2_norm=0, sum=0;
+    double C4=0, C4_norm=0, sum=0;
     int j=0;
 
+
+    for(int i=0; i<N; i++){
+        sum += pow(field[i],2);
+    }
+    sum = sum / N;
+
+
     while (j+k < N){
-        C2 += pow(field[j+k],2)*pow(field[j],2);
+        C4 += pow(field[j+k],2)*pow(field[j],2);
         j += 1;
     }
+    C4 = C4/j - pow(sum,2);
+
     
     for(int l=0; l<N; l++){
-        C2_norm += pow(field[l],4);
+        C4_norm += pow(field[l],4);
     }
+    C4_norm = C4_norm/N - pow(sum,2);
 
-    /*for(int i=0; i<N; i++){
-        sum += field[i];
-    }*/
 
-    return (C2/j)/(C2_norm/N);
+    return C4 / C4_norm;
 }

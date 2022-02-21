@@ -9,8 +9,6 @@ bh = 100
 omega = 1
 
 file_name = f"../../results/output/C2/bh_{bh}_omega_{omega}_mean/C2_N_{N}.txt"
-
-
 data = open(file_name,"r")
 C2 = np.loadtxt(data, unpack=True)
 data.close()

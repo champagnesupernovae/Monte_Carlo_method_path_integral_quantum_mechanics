@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import math
 from scipy.optimize import curve_fit
 
-N = 120
+N = 500
 bh = 100
 omega = 1
 
@@ -12,14 +12,16 @@ data = open(file_name,"r")
 C4 = np.loadtxt(data, unpack=True)
 data.close()
 
-div = 12
+div = 48
+print("div =",div)
 L = int(N/div)
 C4 = C4[0:L]
 eta = bh*omega/N
 a = bh/N
 
-dC4 = 0.0005*np.ones(len(C4))/C4
+dC4 = 0.0005*np.ones(len(C4))/C4 ###CONTROLLARE ERRORE 0.0005 CON BOOTSTRAP MATRIX!!!
 C4 = np.log(C4[0:L])
+#C4 = C4[0:L]
 
 tau = a*np.linspace(0, L, L)
 
@@ -32,7 +34,7 @@ def f(x, E, phi):
 	return -E*x + phi
 
 xdata = np.linspace(0, bh/div, 1000)
-init = [1, 0]
+init = [2, 0]
 
 popt, pcov = curve_fit(f, tau, C4, init, dC4)
 E_fit, phi_fit = popt
