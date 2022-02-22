@@ -12,7 +12,7 @@ data = open(file_name,"r")
 C2 = np.loadtxt(data, unpack=True)
 data.close()
 
-div = 12
+div = 13
 L = int(N/div)
 C2 = C2[0:L]
 eta = bh*omega/N
@@ -28,6 +28,7 @@ plt.plot(tau, C2, '.')
 plt.show()
 '''
 
+###### FIT
 def f(x, E, phi):
 	return -E*x + phi
 
@@ -43,9 +44,9 @@ ndof = len(tau) - len(init)
 
 #print('A = %f +- %f ' % (A_fit, dA_fit))
 print('E1-E0 = %f +- %f ' % (E_fit/omega,  dE_fit/omega))
-
 print('chi2_scaled = %f +/- %f' %(chi2/ndof, np.sqrt(2*ndof)/ndof))
 
+###### PLOT
 plt.rcParams.update({'font.size': 13})
 plt.plot(xdata, f(xdata, *popt), color='red')
 plt.errorbar(tau, C2, dC2, fmt='.', color='black') 

@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import math
 from scipy.optimize import curve_fit
 
-N = 120
+N = 500
 print("N = ",N)
 bh = 100
 omega = 1

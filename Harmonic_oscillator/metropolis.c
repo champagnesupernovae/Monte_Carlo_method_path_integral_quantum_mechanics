@@ -111,12 +111,12 @@ int main(){
         }*/
 
         // file with C4 (four-point function)
-        /*sprintf(C4_filename, "./results/output/C4/bh_%.0lf_omega_%.0lf/C4_N_%d.txt", bh, omega, N);
+        sprintf(C4_filename, "./results/output/C4/bh_%.0lf_omega_%.0lf/C4_N_%d.txt", bh, omega, N);
         C4_file = fopen(C4_filename, "w");
         if(C4_file==NULL){
             perror("Errore in apertura del file");
             exit(1);
-        }*/
+        }
 
         // file with C4[tau] (mean over measures)
         sprintf(C4_mean_filename, "./results/output/C4/bh_%.0lf_omega_%.0lf_mean/C4_N_%d.txt", bh, omega, N);
@@ -222,12 +222,12 @@ int main(){
         }*/
 
         // write the C4 matrix over file C4
-        /*for(int i=0; i<measures; i++){
+        for(int i=0; i<measures; i++){
             for(int tau=0; tau<N; tau++){
                 fprintf(C4_file, "%lf   ", C4[i][tau]);
             }
             fprintf(C4_file, "\n");
-        }*/
+        }
 
         // write over file the mean of C4
         for(int tau=0; tau<N; tau++){
@@ -261,7 +261,7 @@ int main(){
         //fclose(energy_file);
         //fclose(C2_file);
         //fclose(C2_file_mean);
-        //fclose(C4_file);
+        fclose(C4_file);
         fclose(C4_file_mean);
         
         // free the malloc
