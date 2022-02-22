@@ -8,21 +8,23 @@ print("N =",N)
 bh = 100
 omega = 1
 
-file_name = f"../../results/output/C4/bh_{bh}_omega_{omega}_mean_fast/C4_N_{N}.txt"
+file_name = f"../../results/output/C4/bh_{bh}_omega_{omega}_mean/C4_N_{N}.txt"
 data = open(file_name,"r")
 C4 = np.loadtxt(data, unpack=True)
 data.close()
 
-div = 30
-print("div =",div)
-L = int(N/div)
-C4 = C4[0:L]
+tau_max = 8
+
 eta = bh*omega/N
 a = bh/N
 
-dC4 = 0.0005*np.ones(len(C4))
+tau = a*np.linspace(0, N, N)
 
-tau = a*np.linspace(0, L, L)
+mask = tau < tau_max
+tau = tau[mask]
+C4 = C4[mask]
+
+dC4 = 0.0001*np.ones(len(C4))
 
 '''
 plt.plot(tau, C4, '.')
@@ -32,7 +34,7 @@ plt.show()
 def f(x, A, E, phi):
 	return A*np.exp(-E*x) + phi
 
-xdata = np.linspace(0, bh/div, 1000)
+xdata = a*np.linspace(0, len(tau), 1000)
 init = [1, 2, -0.5]
 
 popt, pcov = curve_fit(f, tau, C4, init, dC4)

@@ -16,12 +16,12 @@ double four_point_connected_function(double *field, int N, int k);
 
 int main(){
 	int iflag, measures, i_decorrel, i_term, k=0;
-	double eta, d_metro, bh=100, omega=1;
+	double eta, d_metro, N=100, omega=1;
     double acc=0, rej=0, acc_over_rej;
     FILE *input_file, *field_out_file, *field_0_file, *energy_file, *mean_y2_file, *mean_dy2_file, *C2_file, *C2_file_mean, *C4_file, *C4_file_mean;
     double *field, **C2, **C4, M;
     double U_n, y2mean, dy2mean, Ctau;  // U_n is the intern energy normalized over h/2pi * omega
-    int *np, *ns, array_N[4]={120, 170, 250, 500}, len_array_N, N;
+    int *np, *ns;
     char field_out_filename[65], field_0_filename[65], energy_filename[65], mean_y2_filename[60], mean_dy2_filename[60], C2_filename[60], C2_mean_filename[67], C4_filename[60], C4_mean_filename[67];
     
     srand(time(NULL));
@@ -48,11 +48,7 @@ int main(){
     fclose(input_file);
 
 
-    //// cycle over different chain steps (N) ////
-    len_array_N = sizeof(array_N)/sizeof(int);
-
-    for (int iter=0; iter<len_array_N; iter++){
-        N = array_N[iter];
+    for (double bh=0.01; bh<0.1; bh+=0.01){
         // file with last field
         /*sprintf(field_out_filename, "./results/field/eta_%.2lf_omega_%.0lf/field_out_file_N_%d.txt", eta, omega, N);
         field_out_file = fopen(field_out_filename, "w");
@@ -87,7 +83,7 @@ int main(){
         }*/
 
         // file with energy values
-        sprintf(energy_filename, "./results/output/energy/bh_%.0lf_omega_%.0lf/energy_N_%d.txt", bh, omega, N);
+        sprintf(energy_filename, "./results/output/energy/N_%.0lf_omega_%.0lf/energy_bh_%.2lf.txt", N, omega, bh);
         energy_file = fopen(energy_filename, "w");
         if(energy_file==NULL){
             perror("Errore in apertura del file energy");

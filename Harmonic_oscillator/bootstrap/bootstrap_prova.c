@@ -16,7 +16,7 @@ void make_binned_resampling(int L, int len, double *sample, double *resampled_ch
 int main(){
 
 	int L, len, M=100, eta;
-	double *sample, *resampled_chain, *MEAN, sum=0, final_mean=0, std=0;
+	double *sample, *resampled_chain, *MEAN, *var, sum=0, sum2=0, final_mean=0,final_mean2=0, std=0, sigma=0, var_mean=0, var2_mean=0;
 	char sample_name[60];
 	FILE *file_sample_name, *bootstrap_input, *mean_sigma_len_file, *mean_res_chains_file;
 
@@ -43,14 +43,14 @@ int main(){
     }
 
     // file in which writing mean,std,correlation_len
-	mean_sigma_len_file = fopen("bootstrap_old_mean_sigma_len_file.txt","w");
+	mean_sigma_len_file = fopen("bootstrap_mean_sigma_len_file.txt","w");
 	if(mean_sigma_len_file==NULL){
         perror("Error opening file mean_sigma_len_file.txt");
         exit(1);
     }
 
     // file in which writing the means of the resampled chains
-	mean_res_chains_file = fopen("bootstrap_old_mean_res_chains_file.txt","w");
+	mean_res_chains_file = fopen("bootstrap_mean_res_chains_file.txt","w");
 	if(mean_res_chains_file==NULL){
         perror("Error opening file mean_res_chains_file.txt");
         exit(1);
@@ -67,6 +67,7 @@ int main(){
 	//// CYCLE OVER DIFFERENT CORRELATION LENGTH ////
 
 	MEAN = calloc(M, sizeof(double)); // array with means of each singol chain
+	var = calloc(M, sizeof(double)); // array with means^2 of each singol chain
 	resampled_chain = calloc(L, sizeof(double)); // array of reseampled chain
 	
 	for (int j=1; j<12; j++){
@@ -80,42 +81,48 @@ int main(){
 			// compute the mean of the resampled chain
 			for(int i=0; i<L; i++){
 				sum += resampled_chain[i];
+				sum2 += resampled_chain[i]*resampled_chain[i];
 			}
 			sum = sum/L;
+			sum2 = sum2/L;
 
 			// write it over the MEAN[] array
 			MEAN[m] = sum;
+			var[m] = sum2 - sum*sum;
 			fprintf(mean_res_chains_file, "%lf\n", sum);
 
 			sum = 0;
+			sum2 = 0;
 		}
 
 		// compute the final mean...
 		for(int i=0; i<M; i++){
 				final_mean += MEAN[i];
+				var_mean += var[i];
+				var2_mean += var[i]*var[i];
 			}
+
 		final_mean = final_mean/M;
+		var_mean = var_mean/M;
+		var2_mean = var2_mean/M;
+		sigma = sqrt(var2_mean - var_mean*var_mean);
 
-		// ..and its std
-		for(int i=0; i<M; i++){
-				std += pow((MEAN[i]),2);
-			}
-		std = sqrt(std/M - pow(final_mean,2));
-
-		// print in stdout...
-		printf("your quantity = %.10lf +/- %.10lf\n", final_mean, std);
-
+		printf("iter %d\n",j);
 		// ..and write it over file
-		fprintf(mean_sigma_len_file, "%lf   %lf   %d\n", final_mean, std, len);
+		fprintf(mean_sigma_len_file, "%lf\t%lf\t%d\n", final_mean, sigma, len);
 
 		final_mean = 0;
+		var_mean = 0;
+		var2_mean = 0;
+		sigma = 0;
 		std = 0;
 	
 	}
-
+	printf("done");
 	free(sample);
 	free(resampled_chain);
 	free(MEAN);
+	free(var);
 	
 	fclose(file_sample_name);
 	fclose(bootstrap_input);

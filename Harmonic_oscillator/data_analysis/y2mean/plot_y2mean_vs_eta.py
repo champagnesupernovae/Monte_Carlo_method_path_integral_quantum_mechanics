@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-file_name = "../bootstrap/y2mean_std_eta_bh3_omega3.txt"
+file_name = "y2mean_std_eta_bh3_omega3.txt"
 data = open(file_name,"r")
 y2mean, dy2mean, N = np.loadtxt(data, unpack = True)
 data.close()

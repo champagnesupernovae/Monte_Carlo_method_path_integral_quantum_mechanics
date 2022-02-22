@@ -12,32 +12,25 @@
 #include<time.h>
 #include<string.h>
 
-//!!!!!! ENTER N BEFORE STARTING !!!!!!//
-#define N 80
-//!!!!!! ENTER N BEFORE STARTING !!!!!!//
-
 void make_binned_resampling(int L, int len, double *sample, double *resampled_chain);
 
 
 int main(){
 
-	int L, len, M=50;
+	int len, M=50, N, L;
 	double **sample, *vector, *resampled_chain, *MEAN, sum=0, final_mean=0, std=0;
-	char sample_name[65];
-	FILE *file_sample_name, *bootstrap_input, *mean_sigma_len_file, *mean_res_chains_file;
+	char *sample_name;
+	FILE *file_sample_name, *mean_sigma_len_file, *mean_res_chains_file;
 
 	srand(time(NULL));
 
-
-	// open file with input parameters
-	bootstrap_input = fopen("bootstrap_input_matrix.txt","r");
-	if(bootstrap_input==NULL){
-        perror("Error opening file bootstrap_input.txt.");
-        exit(1);
-    }
-
-    fscanf(bootstrap_input, "%d", &L);          // measures
-    fscanf(bootstrap_input, "%s", sample_name); // file path
+	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! //
+	/////////// CAMBIARE QUI ///////////
+	N = 250;
+	L = 1000000;
+    sample_name = "../../results/output/C4/bh_100_omega_1/C4_N_250.txt";
+    ////////////////////////////////////
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! //
 
     printf("sample_name=%s\n", sample_name);
 
@@ -155,7 +148,6 @@ int main(){
 
 	
 	fclose(file_sample_name);
-	fclose(bootstrap_input);
 	fclose(mean_sigma_len_file);
 	fclose(mean_res_chains_file);
 

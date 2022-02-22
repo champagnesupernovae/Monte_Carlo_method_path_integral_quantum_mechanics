@@ -1,2 +1,0 @@
-10000000
-../Results/output/mean_y2/bh_5_omega_4/mean_y2_N_120.txt

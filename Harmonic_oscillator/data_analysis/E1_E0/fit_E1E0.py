@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 import math
 from scipy.optimize import curve_fit
 
-N = 500
-print("N = ",N)
+N = 120
+print("N =",N)
 bh = 100
 omega = 1
 
@@ -13,15 +13,19 @@ data = open(file_name,"r")
 C2 = np.loadtxt(data, unpack=True)
 data.close()
 
-div = 12
-L = int(N/div)
-C2 = C2[0:L]
+tau_max = 15
+
 eta = bh*omega/N
 a = bh/N
 
-dC2 = 0.0005*np.ones(len(C2))
+tau = a*np.linspace(0, N, N)
 
-tau = a*np.linspace(0, L, L)
+mask = tau < tau_max
+tau = tau[mask]
+C2 = C2[mask]
+
+dC2 = 0.0003*np.ones(len(C2))
+
 
 '''
 plt.plot(tau, C2, '.')
@@ -31,7 +35,7 @@ plt.show()
 def f(x, A, E, phi):
 	return A*np.exp(-E*x) + phi
 
-xdata = np.linspace(0, bh/div, 1000)
+xdata = a*np.linspace(0, len(tau), 1000)
 init = [1, 1, -0.5]
 
 popt, pcov = curve_fit(f, tau, C2, init, dC2)
