@@ -16,17 +16,20 @@ void make_binned_resampling(int L, int len, double *sample, double *resampled_ch
 int main(){
 
 	int len, M=50, N, L;
-	double *sample, *resampled_chain, *MEAN, sum=0, final_mean=0, std=0;
-	char *sample_name;
+	double *sample, *resampled_chain, *MEAN, sum=0, final_mean=0, std=0, bh, omega, eta;
+	char sample_name[70];
 	FILE *file_sample_name, *mean_sigma_len_file, *mean_res_chains_file;
 
 	srand(time(NULL));
 
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! //
 	/////////// CAMBIARE QUI ///////////
-	N = 100;
+	bh = 4.00;
+	omega = 1;
+	eta = 0.01;
+	N = bh*omega / eta;
 	L = 1000000;
-    sample_name = "../results/output/energy/N_100_omega_1/cartella/energy_bh_10.0.txt";
+	sprintf(sample_name, "../results/output/energy/eta_%.2lf_omega_%.0lf/energy_bh_%.2lf.txt", eta, omega, bh);
     ////////////////////////////////////
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! //
 
@@ -40,14 +43,14 @@ int main(){
     }
 
     // file in which writing mean,std,correlation_len
-	mean_sigma_len_file = fopen("bootstrap_old_mean_sigma_len_file.txt","w");
+	mean_sigma_len_file = fopen("bootstrap_mean_sigma_len_file.txt","w");
 	if(mean_sigma_len_file==NULL){
         perror("Error opening file mean_sigma_len_file.txt");
         exit(1);
     }
 
     // file in which writing the means of the resampled chains
-	mean_res_chains_file = fopen("bootstrap_old_mean_res_chains_file.txt","w");
+	mean_res_chains_file = fopen("bootstrap_mean_res_chains_file.txt","w");
 	if(mean_res_chains_file==NULL){
         perror("Error opening file mean_res_chains_file.txt");
         exit(1);

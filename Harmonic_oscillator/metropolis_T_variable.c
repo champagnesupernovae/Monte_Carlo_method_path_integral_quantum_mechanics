@@ -16,13 +16,13 @@ double four_point_connected_function(double *field, int N, int k);
 
 int main(){
 	int iflag, measures, i_decorrel, i_term, k=0;
-	double eta, d_metro, N=100, omega=1;
+	double eta=0.010, d_metro, N, omega=1;
     double acc=0, rej=0, acc_over_rej;
     FILE *input_file, *field_out_file, *field_0_file, *energy_file, *mean_y2_file, *mean_dy2_file, *C2_file, *C2_file_mean, *C4_file, *C4_file_mean;
     double *field, **C2, **C4, M;
     double U_n, y2mean, dy2mean, Ctau;  // U_n is the intern energy normalized over h/2pi * omega
     int *np, *ns;
-    char field_out_filename[65], field_0_filename[65], energy_filename[65], mean_y2_filename[60], mean_dy2_filename[60], C2_filename[60], C2_mean_filename[67], C4_filename[60], C4_mean_filename[67];
+    char field_out_filename[65], field_0_filename[65], energy_filename[70], mean_y2_filename[60], mean_dy2_filename[60], C2_filename[60], C2_mean_filename[67], C4_filename[60], C4_mean_filename[67];
     
     srand(time(NULL));
     //N*a=bh
@@ -48,7 +48,7 @@ int main(){
     fclose(input_file);
 
 
-    for (double bh=0.01; bh<0.1; bh+=0.01){
+    for (double bh=5; bh<6; bh+=1){
         // file with last field
         /*sprintf(field_out_filename, "./results/field/eta_%.2lf_omega_%.0lf/field_out_file_N_%d.txt", eta, omega, N);
         field_out_file = fopen(field_out_filename, "w");
@@ -83,7 +83,7 @@ int main(){
         }*/
 
         // file with energy values
-        sprintf(energy_filename, "./results/output/energy/N_%.0lf_omega_%.0lf/energy_bh_%.2lf.txt", N, omega, bh);
+        sprintf(energy_filename, "./results/output/energy/eta_%.3lf_omega_%.0lf/energy_bh_%.2lf.txt", eta, omega, bh);
         energy_file = fopen(energy_filename, "w");
         if(energy_file==NULL){
             perror("Errore in apertura del file energy");
@@ -122,6 +122,11 @@ int main(){
             exit(1);
         }*/
         
+        //// PARAMETERS SETTING ////
+        //bh = N*eta / omega;
+        N = bh*omega / eta;
+        d_metro = 2*sqrt(eta);
+        printf("eta=%lf\n", eta);
 
         field = calloc(N, sizeof(double));
         np = calloc(N, sizeof(int));
@@ -140,13 +145,6 @@ int main(){
         for(int i=0; i<measures; i++){
             C4[i] = calloc(N, sizeof(double));
         }*/
-
-
-        //// PARAMETERS SETTING ////
-        //bh = N*eta / omega;
-        eta = bh*omega / N;
-        d_metro = 2*sqrt(eta);
-        printf("eta=%lf\n", eta);
 
 
         // initialize the field and set the boundary conditions
@@ -254,7 +252,7 @@ int main(){
         //fclose(field_0_file);
         //fclose(mean_y2_file);
         //fclose(mean_dy2_file);
-        //fclose(energy_file);
+        fclose(energy_file);
         //fclose(C2_file);
         //fclose(C2_file_mean);
         //fclose(C4_file);
