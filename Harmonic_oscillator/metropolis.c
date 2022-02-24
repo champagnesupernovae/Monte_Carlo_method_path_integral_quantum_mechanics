@@ -16,12 +16,12 @@ double four_point_connected_function(double *field, int N, int k);
 
 int main(){
 	int iflag, measures, i_decorrel, i_term, k=0;
-	double eta, d_metro, bh=100, omega=1;
+	double eta, d_metro, bh=3, omega=1;
     double acc=0, rej=0, acc_over_rej;
     FILE *input_file, *field_out_file, *field_0_file, *energy_file, *mean_y2_file, *mean_dy2_file, *C2_file, *C2_file_mean, *C4_file, *C4_file_mean;
     double *field, **C2, **C4, M;
     double U_n, y2mean, dy2mean, Ctau;  // U_n is the intern energy normalized over h/2pi * omega
-    int *np, *ns, array_N[4]={120, 170, 250, 500}, len_array_N, N;
+    int *np, *ns, array_N[10]={10, 20, 30, 40, 50, 60, 70, 80, 90, 100}, len_array_N, N;
     char field_out_filename[65], field_0_filename[65], energy_filename[65], mean_y2_filename[60], mean_dy2_filename[60], C2_filename[60], C2_mean_filename[67], C4_filename[60], C4_mean_filename[67];
     
     srand(time(NULL));
@@ -79,20 +79,20 @@ int main(){
         }*/
 
         // file with dy^2 mean values
-        /*sprintf(mean_dy2_filename, "./results/output/mean_dy2/bh_%.0lf_omega_%.0lf/mean_dy2_N_%d.txt", bh, omega, N);
+        sprintf(mean_dy2_filename, "./results/output/mean_dy2/bh_%.0lf_omega_%.0lf/mean_dy2_N_%d.txt", bh, omega, N);
         mean_dy2_file = fopen(mean_dy2_filename, "w");
         if(mean_dy2_file==NULL){
             perror("Errore in apertura del file");
             exit(1);
-        }*/
+        }
 
         // file with energy values
-        sprintf(energy_filename, "./results/output/energy/bh_%.0lf_omega_%.0lf/energy_N_%d.txt", bh, omega, N);
+        /*sprintf(energy_filename, "./results/output/energy/bh_%.0lf_omega_%.0lf/energy_N_%d.txt", bh, omega, N);
         energy_file = fopen(energy_filename, "w");
         if(energy_file==NULL){
             perror("Errore in apertura del file energy");
             exit(1);
-        }
+        }*/
         
         // file with C2 (two-point function)
         /*sprintf(C2_filename, "./results/output/C2/bh_%.0lf_omega_%.0lf/C2_N_%d.txt", bh, omega, N);
@@ -175,16 +175,16 @@ int main(){
             // MEASURES //
             
             // internal energy
-            U_n = internal_energy(N, eta, field, ns);
-            fprintf(energy_file, "%lf\n", U_n);
+            /*U_n = internal_energy(N, eta, field, ns);
+            fprintf(energy_file, "%lf\n", U_n);*/
 
             // mean of y^2
             /*y2mean = y2_mean(N, field);
             fprintf(mean_y2_file, "%lf\n", y2mean);*/
 
             // mean of dy^2
-            /*dy2mean = dy2_mean(N, field);
-            fprintf(mean_dy2_file, "%lf\n", dy2mean);*/
+            dy2mean = dy2_mean(N, field, ns);
+            fprintf(mean_dy2_file, "%lf\n", dy2mean);
 
             // two-point correlation function for each measure
             /*for (int tau=0; tau<N; tau++){
@@ -257,7 +257,7 @@ int main(){
         //fclose(field_out_file);
         //fclose(field_0_file);
         //fclose(mean_y2_file);
-        //fclose(mean_dy2_file);
+        fclose(mean_dy2_file);
         //fclose(energy_file);
         //fclose(C2_file);
         //fclose(C2_file_mean);
@@ -345,7 +345,7 @@ void update_metropolis (double *acc, double *rej, int N, double eta, double d_me
     double field_P, c1, c2, x, r, dS;
 
     c1 = 1/eta;
-    c2 = eta/2 + 1/eta;
+    c2 = 0.5*eta + 1/eta;
 
     for (int i=0; i<N; i++){
         x = rand();
@@ -355,7 +355,7 @@ void update_metropolis (double *acc, double *rej, int N, double eta, double d_me
 
         field_P = field[i] + d_metro*(1-2*x);
 
-        dS = c1*(field_P-field[i])*(field[s_i]+field[p_i]) + c2*(pow(field[i],2)-pow(field_P,2));
+        dS = c1*(field_P-field[i])*(field[s_i]+field[p_i]) + c2*(field[i]*field[i]-field_P*field_P);
         r = exp(dS);
 
         x = rand();
@@ -380,18 +380,18 @@ double internal_energy(int N, double eta, double *field, int *ns){
     double mean_dy2=0, mean_y2=0;
 
     for (int i=0; i<N; i++){
-        mean_y2 += pow(field[i],2);
+        mean_y2 += field[i]*field[i];
     }
     mean_y2 = mean_y2 * 1./N;
 
 
     for (int j=0; j<N; j++){
-        mean_dy2 += pow((field[ns[j]]-field[j]),2);
+        mean_dy2 += (field[ns[j]]-field[j])*(field[ns[j]]-field[j]);
     }
     mean_dy2 = mean_dy2 * 1./N;
 
 
-    return 1/(2*eta) - 1/(2*pow(eta,2))*mean_dy2 + 1/2*mean_y2;
+    return 0.5 * 1/eta - 0.5 * mean_dy2/(eta*eta) + 0.5 * mean_y2;
 }
 
 //-------------------------------------------------//
@@ -401,7 +401,7 @@ double y2_mean(int N, double *field){
     double mean_y2=0;
 
     for (int i=0; i<N; i++){
-        mean_y2 += pow(field[i],2);
+        mean_y2 += field[i]*field[i];
     }
 
     return mean_y2 * 1./N;
@@ -414,7 +414,7 @@ double dy2_mean(int N, double *field, int *ns){
     double mean_dy2=0;
 
     for (int j=0; j<N; j++){
-        mean_dy2 += pow((field[ns[j]]-field[j]),2);
+        mean_dy2 += (field[ns[j]]-field[j])*(field[ns[j]]-field[j]);
     }
 
     return mean_dy2 * 1./N;
@@ -452,22 +452,22 @@ double four_point_connected_function(double *field, int N, int k){
 
 
     for(int i=0; i<N; i++){
-        sum += pow(field[i],2);
+        sum += field[i]*field[i];
     }
     sum = sum / N;
 
 
     while (j+k < N){
-        C4 += pow(field[j+k],2)*pow(field[j],2);
+        C4 += field[j+k]*field[j+k]*field[j]*field[j];
         j += 1;
     }
-    C4 = C4/j - pow(sum,2);
+    C4 = C4/j - sum*sum;
 
     
     for(int l=0; l<N; l++){
-        C4_norm += pow(field[l],4);
+        C4_norm += field[l]*field[l]*field[l]*field[l];
     }
-    C4_norm = C4_norm/N - pow(sum,2);
+    C4_norm = C4_norm/N - sum*sum;
 
 
     return C4 / C4_norm;

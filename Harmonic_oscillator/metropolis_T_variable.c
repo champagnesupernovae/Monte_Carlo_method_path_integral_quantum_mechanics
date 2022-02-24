@@ -16,7 +16,7 @@ double four_point_connected_function(double *field, int N, int k);
 
 int main(){
 	int iflag, measures, i_decorrel, i_term, k=0;
-	double eta=0.010, d_metro, N, omega=1;
+	double eta=0.01, d_metro, N, omega=1;
     double acc=0, rej=0, acc_over_rej;
     FILE *input_file, *field_out_file, *field_0_file, *energy_file, *mean_y2_file, *mean_dy2_file, *C2_file, *C2_file_mean, *C4_file, *C4_file_mean;
     double *field, **C2, **C4, M;
@@ -47,8 +47,10 @@ int main(){
 
     fclose(input_file);
 
+    printf("eta=%lf\n", eta);
 
-    for (double bh=5; bh<6; bh+=1){
+    for (double bh=0.1; bh<1; bh+=0.1){
+        printf("bh = %lf\n", bh);
         // file with last field
         /*sprintf(field_out_filename, "./results/field/eta_%.2lf_omega_%.0lf/field_out_file_N_%d.txt", eta, omega, N);
         field_out_file = fopen(field_out_filename, "w");
@@ -126,7 +128,6 @@ int main(){
         //bh = N*eta / omega;
         N = bh*omega / eta;
         d_metro = 2*sqrt(eta);
-        printf("eta=%lf\n", eta);
 
         field = calloc(N, sizeof(double));
         np = calloc(N, sizeof(int));
@@ -339,7 +340,7 @@ void update_metropolis (double *acc, double *rej, int N, double eta, double d_me
     double field_P, c1, c2, x, r, dS;
 
     c1 = 1/eta;
-    c2 = eta/2 + 1/eta;
+    c2 = 0.5*eta + 1/eta;
 
     for (int i=0; i<N; i++){
         x = rand();
@@ -349,7 +350,7 @@ void update_metropolis (double *acc, double *rej, int N, double eta, double d_me
 
         field_P = field[i] + d_metro*(1-2*x);
 
-        dS = c1*(field_P-field[i])*(field[s_i]+field[p_i]) + c2*(pow(field[i],2)-pow(field_P,2));
+        dS = c1*(field_P-field[i])*(field[s_i]+field[p_i]) + c2*(field[i]*field[i]-field_P*field_P);
         r = exp(dS);
 
         x = rand();
@@ -374,18 +375,18 @@ double internal_energy(int N, double eta, double *field, int *ns){
     double mean_dy2=0, mean_y2=0;
 
     for (int i=0; i<N; i++){
-        mean_y2 += pow(field[i],2);
+        mean_y2 += field[i]*field[i];
     }
     mean_y2 = mean_y2 * 1./N;
 
 
     for (int j=0; j<N; j++){
-        mean_dy2 += pow((field[ns[j]]-field[j]),2);
+        mean_dy2 += (field[ns[j]]-field[j])*(field[ns[j]]-field[j]);
     }
     mean_dy2 = mean_dy2 * 1./N;
 
 
-    return 1/(2*eta) - 1/(2*pow(eta,2))*mean_dy2 + 1/2*mean_y2;
+    return 0.5 * 1/eta - 0.5 * mean_dy2/(eta*eta) + 0.5 * mean_y2;
 }
 
 //-------------------------------------------------//
@@ -395,7 +396,7 @@ double y2_mean(int N, double *field){
     double mean_y2=0;
 
     for (int i=0; i<N; i++){
-        mean_y2 += pow(field[i],2);
+        mean_y2 += field[i]*field[i];
     }
 
     return mean_y2 * 1./N;
@@ -408,7 +409,7 @@ double dy2_mean(int N, double *field, int *ns){
     double mean_dy2=0;
 
     for (int j=0; j<N; j++){
-        mean_dy2 += pow((field[ns[j]]-field[j]),2);
+        mean_dy2 += (field[ns[j]]-field[j])*(field[ns[j]]-field[j]);
     }
 
     return mean_dy2 * 1./N;
@@ -446,22 +447,22 @@ double four_point_connected_function(double *field, int N, int k){
 
 
     for(int i=0; i<N; i++){
-        sum += pow(field[i],2);
+        sum += field[i]*field[i];
     }
     sum = sum / N;
 
 
     while (j+k < N){
-        C4 += pow(field[j+k],2)*pow(field[j],2);
+        C4 += field[j+k]*field[j+k]*field[j]*field[j];
         j += 1;
     }
-    C4 = C4/j - pow(sum,2);
+    C4 = C4/j - sum*sum;
 
     
     for(int l=0; l<N; l++){
-        C4_norm += pow(field[l],4);
+        C4_norm += field[l]*field[l]*field[l]*field[l];
     }
-    C4_norm = C4_norm/N - pow(sum,2);
+    C4_norm = C4_norm/N - sum*sum;
 
 
     return C4 / C4_norm;
