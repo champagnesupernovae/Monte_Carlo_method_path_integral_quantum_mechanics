@@ -16,13 +16,13 @@ double four_point_connected_function(double *field, int N, int k);
 
 int main(){
 	int iflag, measures, i_decorrel, i_term, k=0;
-	double eta, d_metro, bh=3, omega=1;
+	double eta, d_metro, bh=100, omega=1;
     double acc=0, rej=0, acc_over_rej;
     FILE *input_file, *field_out_file, *field_0_file, *energy_file, *mean_y2_file, *mean_dy2_file, *C2_file, *C2_file_mean, *C4_file, *C4_file_mean;
     double *field, **C2, **C4, M;
     double U_n, y2mean, dy2mean, Ctau;  // U_n is the intern energy normalized over h/2pi * omega
-    int *np, *ns, array_N[10]={10, 20, 30, 40, 50, 60, 70, 80, 90, 100}, len_array_N, N;
-    char field_out_filename[65], field_0_filename[65], energy_filename[65], mean_y2_filename[60], mean_dy2_filename[60], C2_filename[60], C2_mean_filename[67], C4_filename[60], C4_mean_filename[67];
+    int *np, *ns, array_N[3]={125, 200, 500}, len_array_N, N;
+    char field_out_filename[65], field_0_filename[70], energy_filename[65], mean_y2_filename[60], mean_dy2_filename[60], C2_filename[60], C2_mean_filename[67], C4_filename[60], C4_mean_filename[67];
     
     srand(time(NULL));
     //N*a=bh
@@ -62,13 +62,13 @@ int main(){
         }*/
 
         // file with field[0] for the ground wave function
-        /*sprintf(field_0_filename, "./results/field_0/eta_%.0lf_omega_%.0lf/field_0_out_file_N_%d.txt", eta, omega, N);
-        //printf("%s\n", field_0_filename);
+        sprintf(field_0_filename, "./results/field_0/bh_%.0lf_omega_%.0lf/field_0_out_file_N_%d.txt", bh, omega, N);
+        printf("%s\n", field_0_filename);
         field_0_file = fopen(field_0_filename, "w");
         if(field_0_file==NULL){
             perror("Errore in apertura del file field 0");
             exit(1);
-        }*/
+        }
 
         // file with y^2 mean values
         /*sprintf(mean_y2_filename, "./results/output/mean_y2/bh_%.0lf_omega_%.0lf/mean_y2_N_%d.txt", bh, omega, N);
@@ -79,12 +79,12 @@ int main(){
         }*/
 
         // file with dy^2 mean values
-        sprintf(mean_dy2_filename, "./results/output/mean_dy2/bh_%.0lf_omega_%.0lf/mean_dy2_N_%d.txt", bh, omega, N);
+        /*sprintf(mean_dy2_filename, "./results/output/mean_dy2/bh_%.0lf_omega_%.0lf/mean_dy2_N_%d.txt", bh, omega, N);
         mean_dy2_file = fopen(mean_dy2_filename, "w");
         if(mean_dy2_file==NULL){
             perror("Errore in apertura del file");
             exit(1);
-        }
+        }*/
 
         // file with energy values
         /*sprintf(energy_filename, "./results/output/energy/bh_%.0lf_omega_%.0lf/energy_N_%d.txt", bh, omega, N);
@@ -183,8 +183,8 @@ int main(){
             fprintf(mean_y2_file, "%lf\n", y2mean);*/
 
             // mean of dy^2
-            dy2mean = dy2_mean(N, field, ns);
-            fprintf(mean_dy2_file, "%lf\n", dy2mean);
+            /*dy2mean = dy2_mean(N, field, ns);
+            fprintf(mean_dy2_file, "%lf\n", dy2mean);*/
 
             // two-point correlation function for each measure
             /*for (int tau=0; tau<N; tau++){
@@ -199,7 +199,7 @@ int main(){
 
             // save the value of field[0] over file to compute
             // the ground state wave function
-            //fprintf(field_0_file, "%lf\n", field[0]);
+            fprintf(field_0_file, "%lf\n", field[0]);
             
         }
         
@@ -255,9 +255,9 @@ int main(){
 
         // close all files
         //fclose(field_out_file);
-        //fclose(field_0_file);
+        fclose(field_0_file);
         //fclose(mean_y2_file);
-        fclose(mean_dy2_file);
+        //fclose(mean_dy2_file);
         //fclose(energy_file);
         //fclose(C2_file);
         //fclose(C2_file_mean);

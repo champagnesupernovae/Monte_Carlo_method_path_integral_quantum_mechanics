@@ -24,12 +24,12 @@ int main(){
 
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! //
 	/////////// CAMBIARE QUI ///////////
-	bh = 0.90;
+	bh = 3;
 	omega = 1;
-	eta = 0.010;
-	N = bh*omega / eta;
+	N = 80;
+	eta = bh*omega / N;
 	L = 1000000;
-	sprintf(sample_name, "../results/output/energy/eta_%.3lf_omega_%.0lf/energy_bh_%.2lf.txt", eta, omega, bh);
+	sprintf(sample_name, "../results/output/mean_dy2/bh_%.0lf_omega_%.0lf/mean_dy2_N_%d.txt", bh, omega, N);
     ////////////////////////////////////
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! //
 
