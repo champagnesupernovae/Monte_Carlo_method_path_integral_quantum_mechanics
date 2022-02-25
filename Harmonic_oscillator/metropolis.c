@@ -8,6 +8,7 @@ void geometry (int N, int* np, int* ns);
 void initialize_lattice(int N, int iflag, double* field);
 void update_metropolis (double* acc, double* rej, int N, double eta, double d_metro, double* field, int* np, int* ns);
 double internal_energy(int N, double eta, double *field, int *ns);
+double y_mean(int N, double *field);
 double y2_mean(int N, double *field);
 double dy2_mean(int N, double *field, int *ns);
 double two_point_connected_function(double *field, int N, int k);
@@ -392,6 +393,19 @@ double internal_energy(int N, double eta, double *field, int *ns){
 
 
     return 0.5 * 1/eta - 0.5 * mean_dy2/(eta*eta) + 0.5 * mean_y2;
+}
+
+//-------------------------------------------------//
+
+// compute the mean of y^2
+double y_mean(int N, double *field){
+    double mean_y=0;
+
+    for (int i=0; i<N; i++){
+        mean_y += field[i];
+    }
+
+    return mean_y * 1./N;
 }
 
 //-------------------------------------------------//

@@ -19,11 +19,11 @@ int main(){
 	int iflag, measures, i_decorrel, i_term, k=0;
 	double eta=0.01, d_metro, N, omega=1;
     double acc=0, rej=0, acc_over_rej;
-    FILE *input_file, *field_out_file, *field_0_file, *field_100_file, *energy_file, *mean_y2_file, *mean_dy2_file, *C2_file, *C2_file_mean, *C4_file, *C4_file_mean;
+    FILE *input_file, *field_out_file, *field_0_file, *field_100_file, *energy_file, *mean_y_file, *mean_y2_file, *mean_dy2_file, *C2_file, *C2_file_mean, *C4_file, *C4_file_mean;
     double *field, **C2, **C4, M;
-    double U_n, y2mean, dy2mean, Ctau;  // U_n is the intern energy normalized over h/2pi * omega
+    double U_n, ymean, y2mean, dy2mean, Ctau;  // U_n is the intern energy normalized over h/2pi * omega
     int *np, *ns;
-    char field_out_filename[65], field_100_filename[65], field_0_filename[65], energy_filename[70], mean_y2_filename[60], mean_dy2_filename[60], C2_filename[60], C2_mean_filename[67], C4_filename[60], C4_mean_filename[67];
+    char field_out_filename[65], field_100_filename[65], field_0_filename[65], energy_filename[70], mean_y_filename[60], mean_y2_filename[60], mean_dy2_filename[60], C2_filename[60], C2_mean_filename[67], C4_filename[60], C4_mean_filename[67];
     
     srand(time(NULL));
     //N*a=bh
@@ -69,10 +69,18 @@ int main(){
         }*/
 
         // file with field[0] for the ground wave function
-        sprintf(field_0_filename, "./results/field_0/eta_%.2lf_omega_%.0lf/field_0_out_file_bh_%.0lf.txt", eta, omega, bh);
+        /*sprintf(field_0_filename, "./results/field_0/eta_%.2lf_omega_%.0lf/field_0_out_file_bh_%.0lf.txt", eta, omega, bh);
         field_0_file = fopen(field_0_filename, "w");
         if(field_0_file==NULL){
             perror("Errore in apertura del file field 0");
+            exit(1);
+        }*/
+
+        // file with y mean values
+        sprintf(mean_y_filename, "./results/output/mean_y/bh_%.0lf_omega_%.0lf/mean_y_N_%d.txt", bh, omega, N);
+        mean_y_file = fopen(mean_y_filename, "w");
+        if(mean_y_file==NULL){
+            perror("Errore in apertura del file");
             exit(1);
         }
 
@@ -185,6 +193,10 @@ int main(){
             /*y2mean = y2_mean(N, field);
             fprintf(mean_y2_file, "%lf\n", y2mean);*/
 
+            // mean of y^2
+            ymean = y_mean(N, field);
+            fprintf(mean_y_file, "%lf\n", ymean);
+
             // mean of dy^2
             /*dy2mean = dy2_mean(N, field);
             fprintf(mean_dy2_file, "%lf\n", dy2mean);*/
@@ -258,8 +270,9 @@ int main(){
 
         // close all files
         //fclose(field_out_file);
-        fclose(field_0_file);
+        //fclose(field_0_file);
         //fclose(field_100_file);
+        fclose(mean_y_file);
         //fclose(mean_y2_file);
         //fclose(mean_dy2_file);
         //fclose(energy_file);
