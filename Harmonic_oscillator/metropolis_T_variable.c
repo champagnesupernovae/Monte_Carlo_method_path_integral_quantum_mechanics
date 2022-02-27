@@ -50,8 +50,8 @@ int main(){
 
     printf("eta=%lf\n", eta);
 
-    for (double bh=10; bh<11; bh+=100){
-        printf("bh = %lf\n", bh);
+    for (int bh=10; bh<120; bh+=20){
+        printf("bh = %d\n", bh);
         // file with last field
         /*sprintf(field_out_filename, "./results/field/eta_%.2lf_omega_%.0lf/field_out_file_N_%d.txt", eta, omega, N);
         field_out_file = fopen(field_out_filename, "w");
@@ -77,7 +77,7 @@ int main(){
         }*/
 
         // file with y mean values
-        sprintf(mean_y_filename, "./results/output/mean_y/bh_%.0lf_omega_%.0lf/mean_y_N_%d.txt", bh, omega, N);
+        sprintf(mean_y_filename, "./results/output/mean_y/eta_%.2lf_omega_%.0lf/mean_y_bh_%d.txt", eta, omega, bh);
         mean_y_file = fopen(mean_y_filename, "w");
         if(mean_y_file==NULL){
             perror("Errore in apertura del file");
@@ -85,7 +85,7 @@ int main(){
         }
 
         // file with y^2 mean values
-        /*sprintf(mean_y2_filename, "./results/output/mean_y2/bh_%.0lf_omega_%.0lf/mean_y2_N_%d.txt", bh, omega, N);
+        /*sprintf(mean_y2_filename, "./results/output/mean_y2/bh_%.0lf_omega_%.0lf/mean_y2_N_%.0lf.txt", bh, omega, N);
         mean_y2_file = fopen(mean_y2_filename, "w");
         if(mean_y2_file==NULL){
             perror("Errore in apertura del file");
@@ -214,7 +214,7 @@ int main(){
 
             // save the value of field[0] over file to compute
             // the ground state wave function
-            fprintf(field_0_file, "%lf\n", field[0]);
+            //fprintf(field_0_file, "%lf\n", field[0]);
             
         }
         

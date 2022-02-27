@@ -2,11 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-file_name = "../../results/field_0/bh_100_omega_1/field_0_out_file_N_100.txt"
+file_name = "../../results/field_0/eta_0.01_omega_1/field_0_out_file_bh_1000.txt"
 data = open(file_name,"r")
 field0_10 = np.loadtxt(data, unpack=True)
 data.close()
-
+'''
 file_name = "../../results/field_0/bh_100_omega_1/field_0_out_file_N_200.txt"
 data = open(file_name,"r")
 field0_100 = np.loadtxt(data, unpack=True)
@@ -16,7 +16,7 @@ file_name = "../../results/field_0/bh_100_omega_1/field_0_out_file_N_500.txt"
 data = open(file_name,"r")
 field0_1000 = np.loadtxt(data, unpack=True)
 data.close()
-
+'''
 
 def f(x, C0):
 	return C0*np.exp(-x**2)
