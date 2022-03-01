@@ -11,7 +11,14 @@ bh = 3
 omega = 1
 eta = bh*omega/N
 
-plt.errorbar(eta, -0.5*Dy2/eta**2, 0.5*dDy2/eta**2, fmt='.')
-plt.show()
 
-print(0.5*dDy2/eta**2)
+def f(x):
+	return 1/(2*x)
+
+print(f(eta))
+
+yy = f(eta) - 0.5*Dy2/eta**2
+
+plt.errorbar(eta, yy, 0.5*dDy2/eta**2, fmt='.')
+plt.plot(np.linspace(min(eta),max(eta),1000), np.zeros(1000), color='red')
+plt.show()
