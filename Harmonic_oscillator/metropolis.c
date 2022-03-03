@@ -21,7 +21,7 @@ int main(){
     double eta, d_metro, bh=1, omega=1;
     double acc=0, rej=0, acc_over_rej;
     FILE *input_file, *field_out_file, *field_0_file, *field_100_file, *kinetic_energy_file, *energy_file, *mean_y_file, *mean_y2_file, *mean_dy2_file, *C2_file, *C2_file_mean, *C4_file, *C4_file_mean;
-    double *field, **C2, **C4, M, array_eta[10]={0.300, 0.150, 0.100, 0.075, 0.060, 0.050, 0.043, 0.038, 0.033, 0.030};
+    double *field, **C2, **C4, M, array_eta[1]={0.500};
     double U_n, U_k, ymean, y2mean, dy2mean, Ctau;  // U_n is the intern energy normalized over h/2pi * omega
     int *np, *ns, N;
     char field_out_filename[65], field_100_filename[65], field_0_filename[65], kinetic_energy_filename[70], energy_filename[70], mean_y_filename[60], mean_y2_filename[65], mean_dy2_filename[70], C2_filename[60], C2_mean_filename[67], C4_filename[60], C4_mean_filename[67];
@@ -51,7 +51,7 @@ int main(){
     fclose(input_file);
 
 
-    for (int l=0; l<11; l++){
+    for (int l=0; l<1; l++){
         eta = array_eta[l];
         N = bh*omega/eta;
         // file with last field
