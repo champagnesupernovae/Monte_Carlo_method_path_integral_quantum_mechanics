@@ -17,18 +17,21 @@ double four_point_connected_function(double *field, int N, int k);
 
 
 int main(){
-	int iflag, measures, i_decorrel, i_term, k=0;
-	double eta=1, d_metro, bh, omega=1;
+	int iflag, measures, i_decorrel, i_term, k=0, N=100;
+    double eta=0.1, d_metro, bh=10, omega=1;
     double acc=0, rej=0, acc_over_rej;
     FILE *input_file, *field_out_file, *field_0_file, *field_100_file, *energy_file, *mean_y_file, *mean_y2_file, *mean_dy2_file, *C2_file, *C2_file_mean, *C4_file, *C4_file_mean;
     double *field, **C2, **C4, M;
     double U_n, ymean, y2mean, dy2mean, Ctau;  // U_n is the intern energy normalized over h/2pi * omega
-    int *np, *ns, N;
+    int *np, *ns;
     char field_out_filename[65], field_100_filename[65], field_0_filename[65], energy_filename[70], mean_y_filename[60], mean_y2_filename[60], mean_dy2_filename[65], C2_filename[60], C2_mean_filename[67], C4_filename[60], C4_mean_filename[67];
-    
+
     srand(time(NULL));
+
     //N*a=bh
     //N*eta=bh*omega
+    //array_N[4]={120, 170, 250, 500}, bh=100, omega=1
+    //array_N[4]={100, 130, 200, 400}, bh=20, omega=4
 
     //// open input files to get some parameters ////
 
@@ -47,11 +50,11 @@ int main(){
 
     fclose(input_file);
 
-    printf("eta=%lf\n", eta);
 
-    for (int N=100; N<101; N+=1){
-        printf("N = %d\n", N);
-    
+
+    for (int iter=16; iter<21; iter++){
+        d_metro = 0.1*iter;
+        printf("d_metro = %lf\n",d_metro);
         // file with last field
         /*sprintf(field_out_filename, "./results/field/eta_%.2lf_omega_%.0lf/field_out_file_N_%d.txt", eta, omega, N);
         field_out_file = fopen(field_out_filename, "w");
@@ -69,7 +72,8 @@ int main(){
         }*/
 
         // file with field[0] for the ground wave function
-        /*sprintf(field_0_filename, "./results/field_0/eta_%.2lf_omega_%.0lf/field_0_out_file_bh_%d.txt", eta, omega, bh);
+        /*sprintf(field_0_filename, "./results/field_0/bh_%.0lf_omega_%.0lf/field_0_out_file_N_%d.txt", bh, omega, N);
+        printf("%s\n", field_0_filename);
         field_0_file = fopen(field_0_filename, "w");
         if(field_0_file==NULL){
             perror("Errore in apertura del file field 0");
@@ -77,16 +81,15 @@ int main(){
         }*/
 
         // file with y mean values
-        /*sprintf(mean_y_filename, "./results/output/mean_y/eta_%.1lf_omega_%.0lf/mean_y_bh_%.0lf.txt", eta, omega, bh);
+        sprintf(mean_y_filename, "./results/output/scelta_delta_metropolis/y_mean_%.1lf.txt", d_metro);
         mean_y_file = fopen(mean_y_filename, "w");
         if(mean_y_file==NULL){
             perror("Errore in apertura del file");
             exit(1);
-        }*/
+        }
 
         // file with y^2 mean values
-        //sprintf(mean_y2_filename, "./results/output/mean_y2/bh_%.0lf_omega_%.0lf/mean_y2_N_%.0lf.txt", bh, omega, N);
-        /*sprintf(mean_y2_filename, "./results/output/termalization/data_energy_for_term.txt");
+        /*sprintf(mean_y2_filename, "./results/output/mean_y2/bh_%.0lf_omega_%.0lf/mean_y2_N_%d.txt", bh, omega, N);
         mean_y2_file = fopen(mean_y2_filename, "w");
         if(mean_y2_file==NULL){
             perror("Errore in apertura del file");
@@ -94,15 +97,15 @@ int main(){
         }*/
 
         // file with dy^2 mean values
-        sprintf(mean_dy2_filename, "./results/output/mean_dy2/eta_%.0lf_omega_%.0lf/mean_dy2_N_%d.txt", eta, omega, N);
+        /*sprintf(mean_dy2_filename, "./results/output/mean_dy2/bh_%.0lf_omega_%.0lf/mean_dy2_N_%d.txt", bh, omega, N);
         mean_dy2_file = fopen(mean_dy2_filename, "w");
         if(mean_dy2_file==NULL){
             perror("Errore in apertura del file");
             exit(1);
-        }
+        }*/
 
         // file with energy values
-        /*sprintf(energy_filename, "./results/output/energy/eta_%.3lf_omega_%.0lf/energy_bh_%.2lf.txt", eta, omega, bh);
+        /*sprintf(energy_filename, "./results/output/energy/bh_%.0lf_omega_%.0lf/energy_N_%d.txt", bh, omega, N);
         energy_file = fopen(energy_filename, "w");
         if(energy_file==NULL){
             perror("Errore in apertura del file energy");
@@ -149,10 +152,6 @@ int main(){
             exit(1);
         }*/
         
-        //// PARAMETERS SETTING ////
-        bh = N*eta / omega;
-        //N = bh*omega / eta;
-        d_metro = 2*sqrt(eta);
 
         field = calloc(N, sizeof(double));
         np = calloc(N, sizeof(int));
@@ -172,6 +171,8 @@ int main(){
             C4[i] = calloc(N, sizeof(double));
         }*/
 
+
+        //// PARAMETERS SETTING ////
 
         // initialize the field and set the boundary conditions
         initialize_lattice(N, iflag, field);
@@ -198,21 +199,21 @@ int main(){
             /*U_n = internal_energy(N, eta, field, ns);
             fprintf(energy_file, "%lf\n", U_n);*/
 
-             // kinetic energy
+            // kinetic energy
             /*U_k = kinetic_energy(N, eta, field, ns);
             fprintf(kinetic_energy_file, "%lf\n", U_k);*/
 
             // mean of y
-            /*ymean = y_mean(N, field);
-            fprintf(mean_y_file, "%lf\n", ymean);*/
+            ymean = y_mean(N, field);
+            fprintf(mean_y_file, "%lf\n", ymean);
 
             // mean of y^2
             /*y2mean = y2_mean(N, field);
             fprintf(mean_y2_file, "%lf\n", y2mean);*/
 
             // mean of dy^2
-            dy2mean = dy2_mean(N, field, ns);
-            fprintf(mean_dy2_file, "%lf\n", dy2mean);
+            /*dy2mean = dy2_mean(N, field, ns);
+            fprintf(mean_dy2_file, "%lf\n", dy2mean);*/
 
             // two-point correlation function for each measure
             /*for (int tau=0; tau<N; tau++){
@@ -223,7 +224,6 @@ int main(){
             /*for (int tau=0; tau<N; tau++){
                 C4[i][tau] = four_point_connected_function(field, N, tau);
             }*/
-
 
             // save the value of field[0] over file to compute
             // the ground state wave function
@@ -285,9 +285,9 @@ int main(){
         //fclose(field_out_file);
         //fclose(field_0_file);
         //fclose(field_100_file);
-        //fclose(mean_y_file);
+        fclose(mean_y_file);
         //fclose(mean_y2_file);
-        fclose(mean_dy2_file);
+        //fclose(mean_dy2_file);
         //fclose(energy_file);
         //fclose(kinetic_energy_file);
         //fclose(C2_file);
@@ -423,6 +423,21 @@ double internal_energy(int N, double eta, double *field, int *ns){
 
 
     return 0.5 * 1/eta - 0.5 * mean_dy2/(eta*eta) + 0.5 * mean_y2;
+}
+
+//-------------------------------------------------//
+
+// compute the internal energy
+double kinetic_energy(int N, double eta, double *field, int *ns){
+    double mean_dy2=0;
+
+    for (int j=0; j<N; j++){
+        mean_dy2 += (field[ns[j]]-field[j])*(field[ns[j]]-field[j]);
+    }
+    mean_dy2 = mean_dy2 * 1./N;
+
+
+    return 0.5 * 1/eta - 0.5 * mean_dy2/(eta*eta);
 }
 
 //-------------------------------------------------//

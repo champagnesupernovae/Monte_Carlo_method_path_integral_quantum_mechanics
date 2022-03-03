@@ -3,13 +3,12 @@ import matplotlib.pyplot as plt
 import math
 from scipy.optimize import curve_fit
 
-data = open("y2mean_std_eta_bh3_omega1.txt","r")
-y2, dy2, N = np.loadtxt(data, unpack=True)
+data = open("y2mean_std_eta_bh100_omega1.txt","r")
+y2, dy2, eta = np.loadtxt(data, unpack=True)
 data.close()
 
-bh = 3
+bh = 100
 omega = 1
-eta = bh*omega/N
 
 
 def f(x, A, y_exp):
@@ -26,6 +25,9 @@ dA_fit, dy_exp_fit = np.sqrt(pcov.diagonal())
 chi2 = (((y2 - f(eta, *popt))/dy2)**2).sum()
 ndof = len(eta) - len(init)
 
+y_teo = 0.5 + 1/(np.exp(bh*omega)-1)
+
+print('y_teorico = %lf' %y_teo)
 print('A = %f +- %f ' % (A_fit, dA_fit))
 print('y_exp = %f +- %f ' % (y_exp_fit,  dy_exp_fit))
 
@@ -35,7 +37,7 @@ plt.rcParams.update({'font.size': 15})
 plt.plot(xdata, f(xdata, *popt), color='red')
 plt.errorbar(eta, y2, dy2, fmt='.', color='black') 
 plt.xlabel('$\eta$') 
-plt.ylabel(r'$<y^2>$')
+plt.ylabel(r'$\langle y^2\rangle$')
 
 
 plt.show()

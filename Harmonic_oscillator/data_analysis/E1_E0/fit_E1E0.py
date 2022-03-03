@@ -3,11 +3,11 @@ import matplotlib.pyplot as plt
 import math
 from scipy.optimize import curve_fit
 
-N = 120
+N = 250
+
 print("N =",N)
 bh = 100
 omega = 1
-
 file_name = f"../../results/output/C2/bh_{bh}_omega_{omega}_mean/C2_N_{N}.txt"
 data = open(file_name,"r")
 C2 = np.loadtxt(data, unpack=True)
@@ -16,6 +16,7 @@ data.close()
 tau_max = 15
 
 eta = bh*omega/N
+print(eta)
 a = bh/N
 
 tau = a*np.linspace(0, N, N)

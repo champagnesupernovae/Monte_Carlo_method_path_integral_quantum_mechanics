@@ -18,11 +18,11 @@ def f(x):
 
 xdata = np.linspace(0.001, 12, 1000)
 
+plt.rcParams.update({'font.size': 15})
 plt.errorbar(1/bh, U, dU, fmt='.', color='red')
 plt.plot(xdata, f(xdata), color='black')
 plt.xlabel(r'$\beta$E')
 plt.ylabel('U')
 plt.ylim(0,12)
 plt.xlim(0,12)
-plt.rcParams.update({'font.size': 15})
 plt.show()
