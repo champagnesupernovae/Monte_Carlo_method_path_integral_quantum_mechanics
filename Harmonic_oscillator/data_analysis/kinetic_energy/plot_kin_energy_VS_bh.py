@@ -18,8 +18,8 @@ eta2=0.01
 bh2 = N2*eta2/omega
 
 plt.rcParams.update({'font.size': 15})
-plt.errorbar(1/bh1, U_k1, dU_k1, fmt='.', label=r"$\eta=0.1$")
-plt.errorbar(1/bh2, U_k2, dU_k2, fmt='.', label=r"$\eta=0.01$")
+plt.errorbar(bh1, U_k1, dU_k1, fmt='.', label=r"$\eta=0.1$")
+plt.errorbar(bh2, U_k2, dU_k2, fmt='.', label=r"$\eta=0.01$")
 plt.xlabel(r"$1/\beta\hbar$")
 plt.ylabel(r"$U_{kin}$")
 plt.legend()

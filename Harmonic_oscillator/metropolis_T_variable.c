@@ -18,13 +18,13 @@ double four_point_connected_function(double *field, int N, int k);
 
 int main(){
 	int iflag, measures, i_decorrel, i_term, k=0;
-	double eta=1, d_metro, bh, omega=1;
+	double eta=1, d_metro, bh, bh_array[10]={0.1, 0.3, 0.5, 0.7, 0.9, 1, 5, 10, 20, 30}, omega=1;
     double acc=0, rej=0, acc_over_rej;
-    FILE *input_file, *field_out_file, *field_0_file, *field_100_file, *energy_file, *mean_y_file, *mean_y2_file, *mean_dy2_file, *C2_file, *C2_file_mean, *C4_file, *C4_file_mean;
+    FILE *input_file, *field_out_file, *field_0_file, *field_100_file, *energy_file, *kinetic_energy_file, *mean_y_file, *mean_y2_file, *mean_dy2_file, *C2_file, *C2_file_mean, *C4_file, *C4_file_mean;
     double *field, **C2, **C4, M;
-    double U_n, ymean, y2mean, dy2mean, Ctau;  // U_n is the intern energy normalized over h/2pi * omega
+    double U_n, U_k, ymean, y2mean, dy2mean, Ctau;  // U_n is the intern energy normalized over h/2pi * omega
     int *np, *ns, N;
-    char field_out_filename[65], field_100_filename[65], field_0_filename[65], energy_filename[70], mean_y_filename[60], mean_y2_filename[60], mean_dy2_filename[65], C2_filename[60], C2_mean_filename[67], C4_filename[60], C4_mean_filename[67];
+    char field_out_filename[65], field_100_filename[65], field_0_filename[65], kinetic_energy_filename[70], energy_filename[70], mean_y_filename[60], mean_y2_filename[60], mean_dy2_filename[65], C2_filename[60], C2_mean_filename[67], C4_filename[60], C4_mean_filename[67];
     
     srand(time(NULL));
     //N*a=bh
@@ -49,8 +49,9 @@ int main(){
 
     printf("eta=%lf\n", eta);
 
-    for (int N=100; N<101; N+=1){
-        printf("N = %d\n", N);
+    for (int l=0; l<10; l+=1){
+        bh = bh_array[l];
+        printf("bh = %lf\n", bh);
     
         // file with last field
         /*sprintf(field_out_filename, "./results/field/eta_%.2lf_omega_%.0lf/field_out_file_N_%d.txt", eta, omega, N);
@@ -94,12 +95,12 @@ int main(){
         }*/
 
         // file with dy^2 mean values
-        sprintf(mean_dy2_filename, "./results/output/mean_dy2/eta_%.0lf_omega_%.0lf/mean_dy2_N_%d.txt", eta, omega, N);
+        /*sprintf(mean_dy2_filename, "./results/output/mean_dy2/eta_%.0lf_omega_%.0lf/mean_dy2_N_%d.txt", eta, omega, N);
         mean_dy2_file = fopen(mean_dy2_filename, "w");
         if(mean_dy2_file==NULL){
             perror("Errore in apertura del file");
             exit(1);
-        }
+        }*/
 
         // file with energy values
         /*sprintf(energy_filename, "./results/output/energy/eta_%.3lf_omega_%.0lf/energy_bh_%.2lf.txt", eta, omega, bh);
@@ -110,12 +111,12 @@ int main(){
         }*/
 
         // file with kinetic energy values
-        /*sprintf(kinetic_energy_filename, "./results/output/kinetic_energy/eta_%.1lf_omega_%.0lf/energy_N_%d.txt", eta, omega, N);
+        sprintf(kinetic_energy_filename, "./results/output/kinetic_energy/eta_%.0lf_omega_%.0lf/energy_bh_%.2lf.txt", eta, omega, bh);
         kinetic_energy_file = fopen(kinetic_energy_filename, "w");
         if(kinetic_energy_file==NULL){
             perror("Errore in apertura del file energy");
             exit(1);
-        }*/
+        }
         
         // file with C2 (two-point function)
         /*sprintf(C2_filename, "./results/output/C2/bh_%.0lf_omega_%.0lf/C2_N_%d.txt", bh, omega, N);
@@ -150,8 +151,8 @@ int main(){
         }*/
         
         //// PARAMETERS SETTING ////
-        bh = N*eta / omega;
-        //N = bh*omega / eta;
+        //bh = N*eta / omega;
+        N = bh*omega / eta;
         d_metro = 2*sqrt(eta);
 
         field = calloc(N, sizeof(double));
@@ -199,8 +200,8 @@ int main(){
             fprintf(energy_file, "%lf\n", U_n);*/
 
              // kinetic energy
-            /*U_k = kinetic_energy(N, eta, field, ns);
-            fprintf(kinetic_energy_file, "%lf\n", U_k);*/
+            U_k = kinetic_energy(N, eta, field, ns);
+            fprintf(kinetic_energy_file, "%lf\n", U_k);
 
             // mean of y
             /*ymean = y_mean(N, field);
@@ -211,8 +212,8 @@ int main(){
             fprintf(mean_y2_file, "%lf\n", y2mean);*/
 
             // mean of dy^2
-            dy2mean = dy2_mean(N, field, ns);
-            fprintf(mean_dy2_file, "%lf\n", dy2mean);
+            /*dy2mean = dy2_mean(N, field, ns);
+            fprintf(mean_dy2_file, "%lf\n", dy2mean);*/
 
             // two-point correlation function for each measure
             /*for (int tau=0; tau<N; tau++){
@@ -287,9 +288,9 @@ int main(){
         //fclose(field_100_file);
         //fclose(mean_y_file);
         //fclose(mean_y2_file);
-        fclose(mean_dy2_file);
+        //fclose(mean_dy2_file);
         //fclose(energy_file);
-        //fclose(kinetic_energy_file);
+        fclose(kinetic_energy_file);
         //fclose(C2_file);
         //fclose(C2_file_mean);
         //fclose(C4_file);

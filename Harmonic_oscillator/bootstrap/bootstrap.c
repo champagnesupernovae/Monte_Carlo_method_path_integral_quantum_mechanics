@@ -24,9 +24,9 @@ int main(){
 
 	// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! //
 	/////////// CAMBIARE QUI ///////////
-	eta = 0.500;
+	eta = 0.030;
 	omega = 1;
-	bh = 1;
+	bh = 3;
 	L = 1000000;
 	sprintf(sample_name, "../results/output/kinetic_energy/bh_%.0lf_omega_%.0lf/energy_eta_%.3lf.txt", bh, omega, eta);
     ////////////////////////////////////
@@ -102,7 +102,7 @@ int main(){
 		std = sqrt(std/M - pow(final_mean,2));
 
 		// print in stdout...
-		printf("your quantity = %.10lf +/- %.10lf\n", final_mean, std);
+		printf("your quantity = %.15lf +/- %.15lf\n", final_mean, std);
 
 		// ..and write it over file
 		fprintf(mean_sigma_len_file, "%lf   %lf   %d\n", final_mean, std, len);
